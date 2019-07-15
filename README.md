@@ -2,11 +2,10 @@ Code Format
 
 Variables:
 Lowercase letter of first word 
-Uppercase letter of second word
+Uppercase letter of all words after 
 ex: hello, radHappy, aaronCool
 
 Functions:
-Uppercase letter of first word 
-Uppercase letter of second word
+Uppercase of all words
 ex: GetImu, Stars
 
