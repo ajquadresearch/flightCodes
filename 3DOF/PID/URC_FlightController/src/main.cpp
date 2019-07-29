@@ -66,8 +66,8 @@ bool debug = false;
 int printTimer = 5000;
 int lastPrint = 0;
 
- int updateTime = 4000;
- int lastUpdate = 0;
+int updateTime = 4000;
+int lastUpdate = 0;
 
 ////////////////////////////////////////////////////////
 //PIN DEFINITIONS
@@ -82,10 +82,10 @@ int lastPrint = 0;
  int ch6 = 29;
 
 // esc
- int escOut1 = 6;
- int escOut2 = 10;
- int escOut3 = 5;
- int escOut4 = 20;
+int escOut1 = 6;
+int escOut2 = 10;
+int escOut3 = 5;
+int escOut4 = 20;
 
 // led 
 int led = 13; 
@@ -202,77 +202,6 @@ extern int inputPitch, inputRoll, inputYaw;
 // AttitudeController 
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 
-
-/////////////////////////////////////////////////////////
-// BOUND PULSE
-/////////////////////////////////////////////////////////
-// This is a safey feature in the code so the pulses sent to motors won't exced the
-// the max or min of the motors. In this case the min of the motors is 1000 while the
-// max is 2000. Also will activate the motors.
-
-// Variables 
-
-// idle motors 
-int minPulse = 1100;
-
-// max motors
-int maxPulse = 2000;
-
-void boundPulse()
-{
-	// Upper Bound 
-	if (escPulse1 > maxPulse)
-	{
-		escPulse1 = maxPulse;
-	}
-
-	if (escPulse2 > maxPulse)
-	{
-		escPulse2 = maxPulse;
-	}
-
-	if (escPulse3 > maxPulse)
-	{
-		escPulse3 = maxPulse;
-	}
-
-	if (escPulse4 > maxPulse)
-	{
-		escPulse4 = maxPulse;
-	}
-
-	// LowerBound 
-	if (escPulse1 < minPulse)
-	{
-		escPulse1 = minPulse;
-	}
-
-	if (escPulse2 < minPulse)
-	{
-		escPulse2 = minPulse;
-	}
-
-	if (escPulse3 < minPulse)
-	{
-		escPulse3 = minPulse;
-	}
-
-	if (escPulse4 < minPulse)
-	{
-		escPulse4 = minPulse;
-	}
-
-	// Start/Kill MOTORS
-	if(activateMotor < 1100)
-	{
-		escPulse1 = 1000;
-		escPulse2 = 1000;
-		escPulse3 = 1000;
-		escPulse4 = 1000;
-	}
-}
-
-
 /////////////////////////////////////////////////////////
 // CONVERT PULSE TO PWM 
 /////////////////////////////////////////////////////////
@@ -281,7 +210,7 @@ void boundPulse()
 
 void pulsetoPWM()
 {
-	// Convert Mircosecond time to PWM pulse for motors(CREATE NEW FUNCTION WILL NEXT LINES)
+	// Convert Mircosecond time to PWM pulse for motors
 	escPulse1PWM = escPulse1*pwmMax/escPulseTime;
 	escPulse2PWM = escPulse2*pwmMax/escPulseTime;
 	escPulse3PWM = escPulse3*pwmMax/escPulseTime;

@@ -7,8 +7,7 @@
 // Global Variables 
 extern int inputPitch, inputRoll, inputYaw;
 extern float pitch_rate, roll_rate, yaw_rate;
-extern volatile unsigned int throttle_Pulse;
-
+extern volatile unsigned int throttle_Pulse, activateMotor;
 
 
 // Variables
@@ -109,4 +108,71 @@ void getPID()
 	escPulse3 = throttle_Pulse + rollPulse - pitchPulse + yawPulse; 
 	escPulse4 = throttle_Pulse + rollPulse + pitchPulse - yawPulse;
 
+}
+
+/////////////////////////////////////////////////////////
+// BOUND PULSE
+/////////////////////////////////////////////////////////
+// This is a safey feature in the code so the pulses sent to motors won't exced the
+// the max or min of the motors. In this case the min of the motors is 1000 while the
+// max is 2000. Also will activate the motors.
+
+// idle motors 
+int minPulse = 1100;
+
+// max motors
+int maxPulse = 2000;
+
+void boundPulse()
+{
+	// Upper Bound 
+	if (escPulse1 > maxPulse)
+	{
+		escPulse1 = maxPulse;
+	}
+
+	if (escPulse2 > maxPulse)
+	{
+		escPulse2 = maxPulse;
+	}
+
+	if (escPulse3 > maxPulse)
+	{
+		escPulse3 = maxPulse;
+	}
+
+	if (escPulse4 > maxPulse)
+	{
+		escPulse4 = maxPulse;
+	}
+
+	// LowerBound 
+	if (escPulse1 < minPulse)
+	{
+		escPulse1 = minPulse;
+	}
+
+	if (escPulse2 < minPulse)
+	{
+		escPulse2 = minPulse;
+	}
+
+	if (escPulse3 < minPulse)
+	{
+		escPulse3 = minPulse;
+	}
+
+	if (escPulse4 < minPulse)
+	{
+		escPulse4 = minPulse;
+	}
+
+	// Start/Kill MOTORS
+	if(activateMotor < 1100)
+	{
+		escPulse1 = 1000;
+		escPulse2 = 1000;
+		escPulse3 = 1000;
+		escPulse4 = 1000;
+	}
 }

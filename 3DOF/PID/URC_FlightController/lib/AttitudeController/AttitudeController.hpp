@@ -1,1 +1,2 @@
 void getPID();
+void boundPulse();
