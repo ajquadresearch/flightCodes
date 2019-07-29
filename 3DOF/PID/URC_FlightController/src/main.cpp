@@ -48,13 +48,9 @@
 //LIBARIES 
 /////////////////////////////////////////////////////////
 #include <Arduino.h> 							//Used for Visual Studio's code 
-#include <Wire.h>    							//I2C communication 
-#include <Adafruit_Sensor.h> 						// IMU libaries 
-#include <Adafruit_FXAS21002C.h>
-#include <Adafruit_FXOS8700.h>
-#include <Mahony.h>							// Filters for IMU
-#include <Madgwick.h>
-#define AHRS_VARIANT   NXP_FXOS8700_FXAS21002	
+#include <ActualAttitude.hpp>
+#include <DesiredAttitude.hpp>
+#include <AttitudeController.hpp>
 
 /////////////////////////////////////////////////////////
 //RANDOM
@@ -65,11 +61,13 @@ elapsedMicros elapsedTime;
 //SWITCHS
 /////////////////////////////////////////////////////////
 bool debug = false; 
-bool autoLevel = true;
 
 // Variables for debugging
 int printTimer = 5000;
 int lastPrint = 0;
+
+ int updateTime = 4000;
+ int lastUpdate = 0;
 
 ////////////////////////////////////////////////////////
 //PIN DEFINITIONS
@@ -105,12 +103,6 @@ int led = 13;
  int pwmRes = 8;
  int escPulseTime = 4000;
 
- // Pulse length 
- int escPulse1;
- int escPulse2;
- int escPulse3;
- int escPulse4;
-
  // Value for analog write function 
  int escPulse1PWM;
  int escPulse2PWM;
@@ -121,133 +113,14 @@ int led = 13;
 // IMU 
 /////////////////////////////////////////////////////////
 // The IMU is used to get rates and angles
+extern float pitch;
+extern float roll;
+extern float yaw;
 
-// Variables 
- float pitch;
- float roll;
- float yaw;
+extern float pitch_rate;
+extern float roll_rate;
+extern float yaw_rate;
 
- float pitch_prev;
- float roll_prev;
- float yaw_prev;
-
- float pitch_rate;
- float roll_rate;
- float yaw_rate;
-
-
- // Offsets
- float offsetPitch_rate;
- float offsetRoll_rate;
- float offsetYaw_rate;
-
-Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
-Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
-
-// Calibration of magnetometer
-// Offsets applied to raw x/y/z mag values
- float mag_offsets[3] = { 20.74F, -34.59F, 42.05F };
-
-// Soft iron error compensation matrix
- float mag_softiron_matrix[3][3] = {  { 0.978, -0.035,  0.020 },
-								   	  { -0.035,  0.987, -0.042 },
-								   	  { 0.020, -0.042,  1.039 } };
-
- float mag_field_strength = 37.27F;
-
-// Offsets applied to compensate for gyro zero-drift error for x/y/z
- float gyro_zero_offsets[3]      = { 0.0F, 0.0F, 0.0F };
-
-// Filter type
-// Mahnony filter is "ligher" than Madwich
- Mahony filter;
- //Madgwick filter;
-
- // Filter sample rate
- int updateFreq = 250;
- int updateTime = 4000;
- int lastUpdate = 0;
-
- void getIMU()
-{
-	 sensors_event_t gyro_event;
-	 sensors_event_t accel_event;
-	 sensors_event_t mag_event;
-	 gyro.getEvent(&gyro_event);
-	 accelmag.getEvent(&accel_event, &mag_event);
-
-	 // Apply mag offset compensation (base values in uTesla)
-	 float x = mag_event.magnetic.x - mag_offsets[0];
-	 float y = mag_event.magnetic.y - mag_offsets[1];
-	 float z = mag_event.magnetic.z - mag_offsets[2];
-
-	 // Apply mag soft iron error compensation
-	 float mx = x * mag_softiron_matrix[0][0] + y * mag_softiron_matrix[0][1] + z * mag_softiron_matrix[0][2];
-	 float my = x * mag_softiron_matrix[1][0] + y * mag_softiron_matrix[1][1] + z * mag_softiron_matrix[1][2];
-	 float mz = x * mag_softiron_matrix[2][0] + y * mag_softiron_matrix[2][1] + z * mag_softiron_matrix[2][2];
-
-	 // Apply gyro zero-rate error compensation
-	 float gx = gyro_event.gyro.x + gyro_zero_offsets[0];
-	 float gy = gyro_event.gyro.y + gyro_zero_offsets[1];
-	 float gz = gyro_event.gyro.z + gyro_zero_offsets[2];
-
-	 // The filter library expects gyro data in degrees/s, but adafruit sensor
-	 // uses rad/s so we need to convert them first (or adapt the filter lib
-	 // where they are being converted)
-	 gx *= 57.2958F;
-	 gy *= 57.2958F;
-	 gz *= 57.2958F;
-
-	filter.update(gx, gy, gz,
-				  accel_event.acceleration.x, accel_event.acceleration.y, accel_event.acceleration.z,
-				  mx, my, mz);
-
-	 // Degrees (LOOKS LIKE WE WON'T NEED OFFSET FOR ANGLES)
-	 pitch = filter.getRoll();
-	 roll = filter.getPitch();
-	 yaw = -1*filter.getYaw(); 										// negative sign added to correct sign convention
-
-	 // Degrees per second 
-	 pitch_rate = gyro_event.gyro.x*(180/3.14) - offsetPitch_rate;
-	 roll_rate = gyro_event.gyro.y*(180/3.14) - offsetRoll_rate;
-	 yaw_rate = -1*gyro_event.gyro.z*(180/3.14) - offsetYaw_rate;    // negative sign added to correct sign convention
-
-}
-
-//////////////////////////////////////////////////////////
-// IMU CALIBRATION
-/////////////////////////////////////////////////////////
-// Zero the angular rates
-
-// Variables
-
-float sumPitch_rate;
-float sumRoll_rate;
-float sumYaw_rate;
-
-void calIMU()
-{
-	for (int loop = 0; loop < 2000; loop++)
-	{
-		if((elapsedTime - lastUpdate) > updateTime)
-		{
-			// Grab angles
-			getIMU();
-
-			// Sum rates
-			sumPitch_rate += pitch_rate;
-			sumRoll_rate += roll_rate;
-			sumYaw_rate += yaw_rate;
-
-		}
-	}
-
-	// Calculate Angular Rate offsets
-	offsetPitch_rate = sumPitch_rate/2000;
-	offsetRoll_rate = sumRoll_rate/2000;
-	offsetYaw_rate = sumYaw_rate/2000;
-	
-}
 
  /////////////////////////////////////////////////////////
  // INTERUPTS
@@ -323,196 +196,12 @@ void ch5Int()
    }
 }
 
-/////////////////////////////////////////////////////////
-// INPUT
-/////////////////////////////////////////////////////////
-// Calculate the input signal needed to be sent the the PID function
+// Desired Attitude
+extern int inputPitch, inputRoll, inputYaw;
 
-// Variables
+// AttitudeController 
+extern int escPulse1, escPulse2, escPulse3, escPulse4;
 
-// Pitch
-int autoPitch; 
-int inputPitch;
-
-// Roll 
-int autoRoll;
-int inputRoll;
-
-// Yaw
-int inputYaw;
-
-void getInput()
-{
-	// Pitch bandwith of 16
-	if(pitch_ratePulse > 1508)
-	{
-		inputPitch = 1508 - pitch_ratePulse;
-	}
-
-	else if(pitch_ratePulse < 1492)
-	{
-		inputPitch = 1492 - pitch_ratePulse;
-	} 
-	
-	else
-	{
-		inputPitch = 0;
-	}
-
-	// Roll bandwith of 16
-	if(roll_ratePulse > 1508)
-	{
-		inputRoll = roll_ratePulse - 1508;
-	}
-
-	else if(roll_ratePulse < 1492)
-	{
-		inputRoll = roll_ratePulse - 1492;
-	} 
-	
-	else
-	{
-		inputRoll = 0;
-	}
-
-	// Yaw bandwidth of 16
-	if(yaw_ratePulse > 1508)
-	{
-		inputYaw = yaw_ratePulse - 1508;
-	}
-
-	else if(yaw_ratePulse < 1492)
-	{
-		inputYaw = yaw_ratePulse - 1492 ;
-	} 
-	
-	else
-	{
-		inputYaw = 0;
-	}
-
-	inputYaw /= 3;
-
-	// AutoLevel
-	autoPitch = 15*pitch;
-	autoRoll = 15*roll;
-
-	if (autoLevel == false)
-	{
-		autoPitch = 0;
-		autoRoll = 0;
-	}
-
-	inputPitch -= autoPitch;
-	inputPitch /= 3; 
-
-	inputRoll -= autoRoll;
-	inputRoll /= 3;
-}
-
-/////////////////////////////////////////////////////////
-// PID 
-/////////////////////////////////////////////////////////
-// Controller corrects for angular rates to converge to desired hand held contoller rates
-
-// Variables
-
-// Pitch 
-int errorPitch; 
-int pitchPulse;
-int last_errorPitch;
-int pid_max_pitch = 300;
-float Ipitch;
-
-int pPitch = 2;
-int dPitch = 18;
-int iPitch = .02;
-
-// Roll
-int errorRoll; 
-int rollPulse;
-int last_errorRoll;
-int pid_max_roll = 300;
-int Iroll;
-
-int pRoll = pPitch;
-int dRoll = dPitch;
-int iRoll = iPitch;
-
-// Yaw 
-int errorYaw; 
-int yawPulse;
-int last_errorYaw;
-int pid_max_yaw = 300;
-int Iyaw;
-
-int pYaw = 4;
-int dYaw = 0;
-int iYaw = 0.02;
-
-void getPID()
-{
-
-	// Pitch
-	errorPitch = inputPitch - pitch_rate;
-	Ipitch += iPitch*errorPitch; 
-	pitchPulse = pPitch*errorPitch + dPitch*(errorPitch - last_errorPitch) + Ipitch;
-	last_errorPitch = errorPitch; 
-
-	// Bound PID Pitch output
-	if( pitchPulse > pid_max_pitch)
-	{
-		pitchPulse = pid_max_pitch;
-	}
-
-	if( pitchPulse < -pid_max_pitch )
-	{
-		pitchPulse = -pid_max_pitch;
-	}
-
-
-	// Roll 
-	errorRoll = inputRoll - roll_rate;
-	Iroll += iRoll*errorRoll;
-	rollPulse = pRoll*errorRoll + dRoll*(errorRoll - last_errorRoll) + Iroll;
-	last_errorRoll = errorRoll;
-
-	// Bound PID Roll output 
-	if( rollPulse > pid_max_roll)
-	{
-		rollPulse = pid_max_roll;
-	}
-
-	if( rollPulse < -pid_max_roll )
-	{
-		rollPulse = -pid_max_roll;
-	}
-
-
-	// Yaw
-	errorYaw = inputYaw - yaw_rate;
-	Iyaw += iYaw*errorYaw;
-	yawPulse = pYaw*errorYaw +dYaw*(errorYaw - last_errorYaw) + Iyaw;
-	last_errorYaw = errorYaw;
-
-	// Bound PID YAW output  
-	if( yawPulse > pid_max_yaw)
-	{
-		yawPulse = pid_max_yaw;
-	}
-
-	if( yawPulse < -pid_max_yaw )
-	{
-		yawPulse = -pid_max_yaw;
-	}
-
-	// Calculate pulses to motors
-	escPulse1 = throttle_Pulse - rollPulse + pitchPulse + yawPulse;
-	escPulse2 = throttle_Pulse - rollPulse - pitchPulse - yawPulse;
-	escPulse3 = throttle_Pulse + rollPulse - pitchPulse + yawPulse; 
-	escPulse4 = throttle_Pulse + rollPulse + pitchPulse - yawPulse;
-
-}
 
 /////////////////////////////////////////////////////////
 // BOUND PULSE
@@ -606,19 +295,6 @@ void pulsetoPWM()
 }
 
 /////////////////////////////////////////////////////////
-// BINK
-/////////////////////////////////////////////////////////
-// Blinks the built in led
-
-void blinkLed()
-{
-	digitalWrite(led,HIGH);
-	delay(250);
-	digitalWrite(led,LOW);	
-	delay(250);
-}
-
-/////////////////////////////////////////////////////////
 // CONTROLLER CHECK 
 /////////////////////////////////////////////////////////
 // Make sure controller is in the right position
@@ -627,47 +303,13 @@ void controllerCheck()
 	while(activateMotor > 1100)
 	{
 		Serial.println("Turn left controller nobe to 1000");
-		blinkLed();
 	}
 
 	while(throttle_Pulse > 1100)
 	{
 		Serial.println("Lower throttle pulse to 1000");
-		blinkLed();
 	}
 }
-
-/////////////////////////////////////////////////////////
-// IMU INTILIZATION
-/////////////////////////////////////////////////////////
-// Check to see if IMU is active and calibrate 
-
-void imuIntilization()
-{
-
-	// Gyro
-	while(!gyro.begin(GYRO_RANGE_500DPS))
-	{
-		Serial.println("Ooops, no gyro detected ... Check your wiring!");
-		blinkLed();
-	}
-
-	// Accellerometer
-	while(!accelmag.begin(ACCEL_RANGE_4G))
-	{
-		Serial.println("Ooops, no FXOS8700 detected ... Check your wiring!");
-		blinkLed();
-	}
-
-	// Start IMU filter for desired frequency
-	filter.begin(updateFreq);
-
-	// Calibrate IMU to find angular rate offsets
-	blinkLed();
-	calIMU();
-	blinkLed();
-}
-
 
 /////////////////////////////////////////////////////////
 // ESC INTILIZATION
@@ -757,10 +399,7 @@ void loop()
 		lastUpdate = elapsedTime;
 
 		// Get the rates and angles
-		getIMU();
-
-		// Scale the pulse from 1000-2000 (CURRENTLY DOES NOT WORK)
-		//scalePulse(); 
+		GetActualAttitude();
 
 		// Get the input pulse for the PID 
 		getInput();
