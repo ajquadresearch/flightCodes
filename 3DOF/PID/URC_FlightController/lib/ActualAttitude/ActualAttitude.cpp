@@ -8,8 +8,7 @@
 #include <Mahony.h>							// Filters for IMU
 //#include <Madgwick.h>
 
-// Global Variables 
-extern unsigned long elapsedTime;
+// extern unsigned long elapsedTime; (Why does this work here but not in saftey???)
 
 // local variables 
 

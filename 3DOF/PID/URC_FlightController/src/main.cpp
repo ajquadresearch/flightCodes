@@ -47,20 +47,14 @@
 #include <DesiredAttitude.hpp>
 #include <AttitudeController.hpp>
 #include <SpinMotors.hpp>
+#include <Saftey.cpp> 
 
 elapsedMicros elapsedTime;
-
-bool debug = false; 
-
-// Variables for debugging
-int printTimer = 5000;
-int lastPrint = 0;
+extern bool debug;
 
 int updateTime = 4000;
 int lastUpdate = 0;
 
-// led 
-int led = 13; 
 
  /////////////////////////////////////////////////////////
  // INTERUPTS
@@ -162,20 +156,6 @@ void InteruptInitialization()
 	return;
  }
 
-
-/////////////////////////////////////////////////////////
-// CONTROLLER CHECK 
-/////////////////////////////////////////////////////////
-// Make sure controller is in the right position
-void controllerCheck()
-{
-	while(activateMotor > 1100)
-		Serial.println("Turn left controller nobe to 1000");
-
-	while(throttle_Pulse > 1100)
-		Serial.println("Lower throttle pulse to 1000");
-}
-
 /////////////////////////////////////////////////////////
 // SETUP
 /////////////////////////////////////////////////////////
@@ -183,32 +163,17 @@ void controllerCheck()
 
 void setup() 
 {
-	// Do you want to debug?
-	if(debug == true)  
-	{
-		Serial.begin(115200);
-		while(!Serial);
-		Serial.println("DEBUGING");
-	}
+	SafteyInitialization();
 
 	InteruptInitialization();
 
-	//Led 
-	pinMode(led,OUTPUT);
-
-	// Make sure controller is in the right starting position
 	controllerCheck();
 
-	// Intilizate the IMU 
 	imuIntilization();
 
-	// Initialize esc
 	escInitialize();
 
-	// Setup completed 
-	digitalWrite(led,HIGH);
-	Serial.println("Finished Setup");
-	delay(1000);
+	SetupCompleted();
 }
 
 /////////////////////////////////////////////////////////
@@ -239,13 +204,12 @@ void loop()
 
 	}	
 
-	// Check output variables
-	if (debug == true)
-	{
-		if ((elapsedTime - lastPrint) >= printTimer)
-		{
-			lastPrint = elapsedTime;
-			Serial.println(yaw_ratePulse);
-		}
+	 if (debug == true)
+    {
+        if ((elapsedTime - lastPrint) >= printTimer)
+        {
+            lastPrint = elapsedTime;
+            Serial.println("Testing");
+        }
 	}
 }
