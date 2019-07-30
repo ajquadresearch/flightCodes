@@ -48,14 +48,8 @@
 #include <AttitudeController.hpp>
 #include <SpinMotors.hpp>
 
-/////////////////////////////////////////////////////////
-//RANDOM
-/////////////////////////////////////////////////////////
 elapsedMicros elapsedTime;
 
-/////////////////////////////////////////////////////////
-//SWITCHS
-/////////////////////////////////////////////////////////
 bool debug = false; 
 
 // Variables for debugging
@@ -64,18 +58,6 @@ int lastPrint = 0;
 
 int updateTime = 4000;
 int lastUpdate = 0;
-
-////////////////////////////////////////////////////////
-//PIN DEFINITIONS
-////////////////////////////////////////////////////////
-
-// Reciever  
- int ch1 = 24;
- int ch2 = 25;
- int ch3 = 26;
- int ch4 = 27;
- int ch5 = 28;
- int ch6 = 29;
 
 // led 
 int led = 13; 
@@ -97,62 +79,88 @@ int led = 13;
  unsigned long prev5 = 0;
  volatile unsigned int activateMotor = 1500;
 
+
+ // Reciever  
+ int ch1 = 24;
+ int ch2 = 25;
+ int ch3 = 26;
+ int ch4 = 27;
+ int ch5 = 28;
+ int ch6 = 29;
+
  // Get pulse length 
 
  // Roll 
  void ch1Int()
 {
-  if (digitalReadFast(ch1)){
-	prev1 = elapsedTime;
-  }
-  else{
-	roll_ratePulse = elapsedTime - prev1;
-  }
+  if (digitalReadFast(ch1))
+  	prev1 = elapsedTime;
+  else
+  	roll_ratePulse = elapsedTime - prev1;
+
+  return;
 }
 
 // Pitch 
 void ch2Int()
 {
-  if (digitalReadFast(ch2)){
-	prev2 = elapsedTime;
-  }
-  else{
-	pitch_ratePulse = elapsedTime - prev2;
-  }
+  if (digitalReadFast(ch2))
+  	prev2 = elapsedTime;
+  else
+  	pitch_ratePulse = elapsedTime - prev2;
+
+ return; 
 }
 
 // Throttle 
 void ch3Int()
 {
-   if (digitalReadFast(ch3)){
-	prev3 = elapsedTime;
-   }
-   else{
-	throttle_Pulse = elapsedTime - prev3;
-   }  
+   if (digitalReadFast(ch3))
+   	prev3 = elapsedTime;
+   else
+   	throttle_Pulse = elapsedTime - prev3;
+
+   return;
 }
 
 // Yaw 
 void ch4Int()
 {
-   if (digitalReadFast(ch4)){
-	prev4 = micros();
-   }
-   else{
-	yaw_ratePulse = micros() - prev4;
-   }
+   if (digitalReadFast(ch4))
+   	prev4 = elapsedTime;
+   else
+   	yaw_ratePulse = elapsedTime - prev4;
 }
 
 // Switch 
 void ch5Int()
 {
-   if (digitalReadFast(ch5)){
-	prev5 = elapsedTime;
-   }
-   else{
-	activateMotor = elapsedTime - prev5;
-   }
+   if (digitalReadFast(ch5))
+   	prev5 = elapsedTime;
+   else
+   	activateMotor = elapsedTime - prev5;
+	
+   return;
 }
+
+void InteruptInitialization()
+ {
+	// Reciever 
+	pinMode(ch1,INPUT);
+	pinMode(ch2,INPUT);
+	pinMode(ch3,INPUT);
+	pinMode(ch4,INPUT);
+	pinMode(ch5,INPUT);
+
+	 // Setup rx pin interrupts
+  	attachInterrupt(ch1,ch1Int,CHANGE);
+  	attachInterrupt(ch2,ch2Int,CHANGE);
+  	attachInterrupt(ch3,ch3Int,CHANGE);
+  	attachInterrupt(ch4,ch4Int,CHANGE);
+	attachInterrupt(ch5,ch5Int,CHANGE);
+
+	return;
+ }
 
 
 /////////////////////////////////////////////////////////
@@ -162,14 +170,10 @@ void ch5Int()
 void controllerCheck()
 {
 	while(activateMotor > 1100)
-	{
 		Serial.println("Turn left controller nobe to 1000");
-	}
 
 	while(throttle_Pulse > 1100)
-	{
 		Serial.println("Lower throttle pulse to 1000");
-	}
 }
 
 /////////////////////////////////////////////////////////
@@ -187,23 +191,10 @@ void setup()
 		Serial.println("DEBUGING");
 	}
 
-	// Set pin direction(INPUT/OUTPUT)
-
-	// Reciever 
-	pinMode(ch1,INPUT);
-	pinMode(ch2,INPUT);
-	pinMode(ch3,INPUT);
-	pinMode(ch4,INPUT);
+	InteruptInitialization();
 
 	//Led 
 	pinMode(led,OUTPUT);
-
-	// Setup rx pin interrupts
-  	attachInterrupt(ch1,ch1Int,CHANGE);
-  	attachInterrupt(ch2,ch2Int,CHANGE);
-  	attachInterrupt(ch3,ch3Int,CHANGE);
-  	attachInterrupt(ch4,ch4Int,CHANGE);
-	attachInterrupt(ch5,ch5Int,CHANGE);
 
 	// Make sure controller is in the right starting position
 	controllerCheck();

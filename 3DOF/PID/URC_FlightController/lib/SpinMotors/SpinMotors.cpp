@@ -56,6 +56,8 @@ void escInitialize()
   	analogWrite(escOut4, escInit);
   	delay(5000);
 	Serial.println("ESC Initialization Completed");	
+
+	return;
 }
 
 /////////////////////////////////////////////////////////
@@ -77,4 +79,6 @@ void pulsetoPWM()
   	analogWrite(escOut2, escPulse2PWM);
   	analogWrite(escOut3, escPulse3PWM);
   	analogWrite(escOut4, escPulse4PWM);
+
+	return;
 }

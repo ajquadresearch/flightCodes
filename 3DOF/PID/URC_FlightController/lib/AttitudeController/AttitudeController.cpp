@@ -108,6 +108,8 @@ void getPID()
 	escPulse3 = throttle_Pulse + rollPulse - pitchPulse + yawPulse; 
 	escPulse4 = throttle_Pulse + rollPulse + pitchPulse - yawPulse;
 
+	return;
+
 }
 
 /////////////////////////////////////////////////////////
@@ -175,4 +177,6 @@ void boundPulse()
 		escPulse3 = 1000;
 		escPulse4 = 1000;
 	}
+
+	return;
 }

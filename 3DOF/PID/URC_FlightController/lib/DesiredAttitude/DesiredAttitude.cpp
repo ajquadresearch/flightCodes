@@ -90,4 +90,6 @@ void getInput()
 
 	desiredRollRate -= autoRoll;
 	desiredRollRate /= 3;
+
+	return;
 }
