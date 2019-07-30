@@ -7,79 +7,77 @@
 extern volatile unsigned int roll_ratePulse;
 extern volatile unsigned int pitch_ratePulse;
 extern volatile unsigned int yaw_ratePulse;
-extern float pitch, roll;
+extern float actualPitch, actualRoll;
 
 // Local Variables
-
-
 bool autoLevel = true;
 
 // Pitch
 int autoPitch; 
-int inputPitch;
+int desiredPitchRate;
 
 // Roll 
 int autoRoll;
-int inputRoll;
+int desiredRollRate;
 
 // Yaw
-int inputYaw;
+int desiredYawRate;
 
 void getInput()
 {
 	// Pitch bandwith of 16
 	if(pitch_ratePulse > 1508)
 	{
-		inputPitch = 1508 - pitch_ratePulse;
+		desiredPitchRate = 1508 - pitch_ratePulse;
 	}
 
 	else if(pitch_ratePulse < 1492)
 	{
-		inputPitch = 1492 - pitch_ratePulse;
+		desiredPitchRate = 1492 - pitch_ratePulse;
 	} 
 	
 	else
 	{
-		inputPitch = 0;
+		desiredPitchRate = 0;
 	}
 
 	// Roll bandwith of 16
 	if(roll_ratePulse > 1508)
 	{
-		inputRoll = roll_ratePulse - 1508;
+		desiredRollRate = roll_ratePulse - 1508;
 	}
 
 	else if(roll_ratePulse < 1492)
 	{
-		inputRoll = roll_ratePulse - 1492;
+		desiredRollRate = roll_ratePulse - 1492;
 	} 
 	
 	else
 	{
-		inputRoll = 0;
+		desiredRollRate = 0;
 	}
 
 	// Yaw bandwidth of 16
 	if(yaw_ratePulse > 1508)
 	{
-		inputYaw = yaw_ratePulse - 1508;
+		desiredYawRate = yaw_ratePulse - 1508;
 	}
 
 	else if(yaw_ratePulse < 1492)
 	{
-		inputYaw = yaw_ratePulse - 1492 ;
+		desiredYawRate = yaw_ratePulse - 1492 ;
 	} 
 	
 	else
 	{
-		inputYaw = 0;
+		desiredYawRate = 0;
 	}
 
-	inputYaw /= 3;
+	desiredYawRate /= 3;
 
 	// AutoLevel
-	autoPitch = 15*pitch;
-	autoRoll = 15*roll;
+	autoPitch = 15*actualPitch;
+	autoRoll = 15*actualRoll;
 
 	if (autoLevel == false)
 	{
@@ -87,9 +85,9 @@ void getInput()
 		autoRoll = 0;
 	}
 
-	inputPitch -= autoPitch;
-	inputPitch /= 3; 
+	desiredPitchRate -= autoPitch;
+	desiredPitchRate /= 3; 
 
-	inputRoll -= autoRoll;
-	inputRoll /= 3;
+	desiredRollRate -= autoRoll;
+	desiredRollRate /= 3;
 }

@@ -39,16 +39,11 @@
  *  
 */
 
-// TODO'S 
-/* 4-12-19
- * 1. CHECK TO MAKE SURE SETUP WORKS WITH NEW FUNCTIONS
-*/ 
-
 /////////////////////////////////////////////////////////
 //LIBARIES 
 /////////////////////////////////////////////////////////
 #include <Arduino.h> 							//Used for Visual Studio's code 
-#include <ActualAttitude.hpp>
+#include <ActualAttitude.hpp>     
 #include <DesiredAttitude.hpp>
 #include <AttitudeController.hpp>
 
@@ -108,19 +103,6 @@ int led = 13;
  int escPulse2PWM;
  int escPulse3PWM;
  int escPulse4PWM;
-
-//////////////////////////////////////////////////////////
-// IMU 
-/////////////////////////////////////////////////////////
-// The IMU is used to get rates and angles
-extern float pitch;
-extern float roll;
-extern float yaw;
-
-extern float pitch_rate;
-extern float roll_rate;
-extern float yaw_rate;
-
 
  /////////////////////////////////////////////////////////
  // INTERUPTS
@@ -195,9 +177,6 @@ void ch5Int()
 	activateMotor = elapsedTime - prev5;
    }
 }
-
-// Desired Attitude
-extern int inputPitch, inputRoll, inputYaw;
 
 // AttitudeController 
 extern int escPulse1, escPulse2, escPulse3, escPulse4;

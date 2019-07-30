@@ -13,21 +13,17 @@ extern unsigned long elapsedTime;
 
 // local variables 
 
-float sumPitch_rate;
-float sumRoll_rate;
-float sumYaw_rate;
-
- float pitch;
- float roll;
- float yaw;
+ float actualPitch;
+ float actualRoll;
+ float actualYaw;
 
  float pitch_prev;
  float roll_prev;
  float yaw_prev;
 
- float pitch_rate;
- float roll_rate;
- float yaw_rate;
+ float actualPitchRate;
+ float actualRollRate;
+ float actualYawRate;
 
 
  // Offsets
@@ -111,14 +107,14 @@ void GetActualAttitude()
 				  mx, my, mz);
 
 	 // Degrees (LOOKS LIKE WE WON'T NEED OFFSET FOR ANGLES)
-	 pitch = filter.getRoll();
-	 roll = filter.getPitch();
-	 yaw = -1*filter.getYaw(); 										// negative sign added to correct sign convention
+	 actualPitch = filter.getRoll();
+	 actualRoll = filter.getPitch();
+	 actualYaw = -1*filter.getYaw(); 										// negative sign added to correct sign convention
 
 	 // Degrees per second 
-	 pitch_rate = gyro_event.gyro.x*(180/3.14) - offsetPitch_rate;
-	 roll_rate = gyro_event.gyro.y*(180/3.14) - offsetRoll_rate;
-	 yaw_rate = -1*gyro_event.gyro.z*(180/3.14) - offsetYaw_rate;    // negative sign added to correct sign convention
+	 actualPitchRate = gyro_event.gyro.x*(180/3.14) - offsetPitch_rate;
+	 actualRollRate = gyro_event.gyro.y*(180/3.14) - offsetRoll_rate;
+	 actualYawRate = -1*gyro_event.gyro.z*(180/3.14) - offsetYaw_rate;    // negative sign added to correct sign convention
 
 }
 

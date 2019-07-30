@@ -5,8 +5,8 @@
 
 
 // Global Variables 
-extern int inputPitch, inputRoll, inputYaw;
-extern float pitch_rate, roll_rate, yaw_rate;
+extern int desiredPitchRate, desiredRollRate, desiredYawRate;
+extern float actualPitchRate, actualRollRate, actualYawRate;
 extern volatile unsigned int throttle_Pulse, activateMotor;
 
 
@@ -50,7 +50,7 @@ void getPID()
 {
 
 	// Pitch
-	errorPitch = inputPitch - pitch_rate;
+	errorPitch = desiredPitchRate - actualPitchRate;
 	Ipitch += iPitch*errorPitch; 
 	pitchPulse = pPitch*errorPitch + dPitch*(errorPitch - last_errorPitch) + Ipitch;
 	last_errorPitch = errorPitch; 
@@ -68,7 +68,7 @@ void getPID()
 
 
 	// Roll 
-	errorRoll = inputRoll - roll_rate;
+	errorRoll = desiredRollRate - actualRollRate;
 	Iroll += iRoll*errorRoll;
 	rollPulse = pRoll*errorRoll + dRoll*(errorRoll - last_errorRoll) + Iroll;
 	last_errorRoll = errorRoll;
@@ -86,7 +86,7 @@ void getPID()
 
 
 	// Yaw
-	errorYaw = inputYaw - yaw_rate;
+	errorYaw = desiredYawRate - actualYawRate;
 	Iyaw += iYaw*errorYaw;
 	yawPulse = pYaw*errorYaw +dYaw*(errorYaw - last_errorYaw) + Iyaw;
 	last_errorYaw = errorYaw;
