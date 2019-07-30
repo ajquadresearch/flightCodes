@@ -63,6 +63,8 @@ int lastUpdate = 0;
  volatile unsigned int yaw_ratePulse = 1500;
  unsigned long prev5 = 0;
  volatile unsigned int activateMotor = 1500;
+ unsigned long prev6 = 0;
+ volatile unsigned int SWB = 1500;
 
 
  // Reciever pins 
@@ -128,6 +130,17 @@ void ch5Int()
    return;
 }
 
+// Switch 
+void ch6Int()
+{
+   if (digitalReadFast(ch6))
+   	prev6 = elapsedTime;
+   else
+   	SWB = elapsedTime - prev6;
+	
+   return;
+}
+
 void InteruptInitialization()
  {
 	// Reciever 
@@ -143,6 +156,7 @@ void InteruptInitialization()
   	attachInterrupt(ch3,ch3Int,CHANGE);
   	attachInterrupt(ch4,ch4Int,CHANGE);
 	attachInterrupt(ch5,ch5Int,CHANGE);
+	attachInterrupt(ch6,ch6Int,CHANGE);
 
 	return;
  }
@@ -201,7 +215,7 @@ void loop()
         if ((elapsedTime - lastPrint) >= printTimer)
         {
             lastPrint = elapsedTime;
-            Serial.println(activateMotor);
+            Serial.println(SWB);
         }
 	}
 }
