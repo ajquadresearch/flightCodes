@@ -1,6 +1,6 @@
 // THIS SUBROUNTINE DETERMINES THE ACTUAL ATTITUDE OF THE QUADCOPTER 
 
-#include <Arduino.h> 							        //Used for Visual Studio's code 
+#include <Arduino.h> 							        //Used for Visual Studio's code (May not have to include this) 
 #include <Wire.h>    							        //I2C communication 
 #include <Adafruit_Sensor.h> 						    // IMU libaries 
 #include <Adafruit_FXAS21002C.h>
