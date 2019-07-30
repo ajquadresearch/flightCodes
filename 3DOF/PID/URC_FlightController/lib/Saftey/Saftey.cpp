@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 bool debug = true; 
-extern unsigned long elapsedTime;
+// extern unsigned long elapsedTime;
 
 // led light 
 int led = 13; 
