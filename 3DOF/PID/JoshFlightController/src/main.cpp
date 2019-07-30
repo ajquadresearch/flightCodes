@@ -10,13 +10,12 @@
  * 
  * HAND HELD CONTROLLER: https://www.amazon.com/FlySky-FS-i6-M2-2-4GHz-6-Channel-Transmitter/dp/B00PF160IK
  * 
- * MAKE SURE TO SET THE FAIL SAFE MODE ON THE CONTROLLER 
+ * MAKE SURE TO SET THE FAIL SAFE MODE ON THE CONTROLLER AND CHANNEL FIVE IS SWITCH TO THE SWITCH
  * REFER TO THIS VIDEO: https://www.youtube.com/watch?v=LXTEXqR_ghI
- * (add settings here ) 
- * 
  * 
  * IMU: NXP 9DOF ADIAFRUIT 
  * https://www.adafruit.com/product/3463
+ * BE SURE TO CALIBRATE AND TEST BEFORE USE https://www.youtube.com/watch?v=1geo_N5X7ic
  * 
  * MOTOR: Turnigy Multistar 2213-980Kv 14 Pole Multi-Rotor Outrunner V2
  * https://hobbyking.com/en_us/turnigy-multistar-2213-980kv-14-pole-multi-rotor-outrunner-v2.html
@@ -27,15 +26,6 @@
  * FRAME: 4-Axis Multi Rotor Airframe 450mm
  * https://www.amazon.com/ShareGoo-Airframe-FrameWheel-Quadcopter-Aircraft/dp/B07H3WDSX3/ref=sr_1_fkmrnull_1_sspa?keywords=4-Axis+Multi+Rotor+Airframe+450mm&qid=1555038824&s=gateway&sr=8-1-fkmrnull-spons&psc=1
  * 
- * CREATED BY:
- * JOSHUA WALLACE, KIETH NASON
- * 
- * 4-12-19 
- * 
- * ////////////////////////////////////// 
- * // WARNING!! 
- * //////////////////////////////////////
- * Don't be an idot. -JOSH
  *  
 */
 
@@ -49,12 +39,13 @@
 #include <SpinMotors.hpp>
 #include <Saftey.cpp> 
 
+
 elapsedMicros elapsedTime;
 extern bool debug;
 
+// Main loop 
 int updateTime = 4000;
 int lastUpdate = 0;
-
 
  /////////////////////////////////////////////////////////
  // INTERUPTS
@@ -74,7 +65,7 @@ int lastUpdate = 0;
  volatile unsigned int activateMotor = 1500;
 
 
- // Reciever  
+ // Reciever pins 
  int ch1 = 24;
  int ch2 = 25;
  int ch3 = 26;
@@ -179,6 +170,7 @@ void setup()
 /////////////////////////////////////////////////////////
 // MAIN CODE LOOP 
 /////////////////////////////////////////////////////////
+
 void loop() 
 {
 	// Update pulse to motors every 250hz
@@ -187,17 +179,17 @@ void loop()
 
 		lastUpdate = elapsedTime;
 
-		// Get the rates and angles
+		// Grabs the angles and rates from the IMU
 		GetActualAttitude();
 
-		// Get the input pulse for the PID 
-		getInput();
+		// Grabs the desired rates from the hand held device 
+		GetDesiredAttitude();
 
 		// Get the PID corrections and calculate the motor pulses 
-		getPID();
+		GetAttitudeController();
 
 		// Make sure pulse is in correct range and kill or activate motors  
-		boundPulse();
+		BoundPulse();
 
 		// Convert the Pulse to PWM in order to spin the motors 
 		pulsetoPWM();
@@ -209,7 +201,7 @@ void loop()
         if ((elapsedTime - lastPrint) >= printTimer)
         {
             lastPrint = elapsedTime;
-            Serial.println("Testing");
+            Serial.println(activateMotor);
         }
 	}
 }

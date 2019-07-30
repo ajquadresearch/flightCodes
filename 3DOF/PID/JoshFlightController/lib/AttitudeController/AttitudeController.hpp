@@ -1,2 +1,2 @@
-void getPID();
-void boundPulse();
+void GetAttitudeController();
+void BoundPulse();

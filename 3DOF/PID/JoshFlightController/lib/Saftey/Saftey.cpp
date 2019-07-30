@@ -1,7 +1,7 @@
 
 #include <Arduino.h>
 
-bool debug = true; 
+bool debug = false; 
 // extern unsigned long elapsedTime;
 
 // led light 
@@ -31,29 +31,17 @@ void SetupCompleted()
 	delay(1000);
 }
 
-void Blink()
-{
-    digitalWrite(led, HIGH);
-    delay(1000);
-    digitalWrite(led, LOW);
-    delay(1000);
-}
-
-/////////////////////////////////////////////////////////
-// CONTROLLER CHECK 
-/////////////////////////////////////////////////////////
-// Make sure controller is in the right position
 
 extern volatile unsigned int throttle_Pulse;
 extern volatile unsigned int activateMotor;
 
+// Make sure all channels are in the right position before turning on
+// prevents jump start of the quadcopter 
 void controllerCheck()
 {
 	while(activateMotor > 1100)
 		Serial.println("Turn left controller nobe to 1000");
-        Blink();
 
 	while(throttle_Pulse > 1100)
 		Serial.println("Lower throttle pulse to 1000");
-        Blink();
 }

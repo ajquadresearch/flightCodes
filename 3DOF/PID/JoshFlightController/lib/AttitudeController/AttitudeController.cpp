@@ -1,8 +1,7 @@
 /////////////////////////////////////////////////////////
-// PID 
+// ATTITUDE CONTROLLER
 /////////////////////////////////////////////////////////
-// Controller corrects for angular rates to converge to desired hand held contoller rates
-
+// This subroutine takes in the desired and actual pitch roll and yaw rates to determine the motor outputs
 
 // Global Variables 
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
@@ -46,7 +45,7 @@ int pYaw = 4;
 int dYaw = 0;
 int iYaw = 0.02;
 
-void getPID()
+void GetAttitudeController()
 {
 
 	// Pitch
@@ -125,7 +124,7 @@ int minPulse = 1100;
 // max motors
 int maxPulse = 2000;
 
-void boundPulse()
+void BoundPulse()
 {
 	// Upper Bound 
 	if (escPulse1 > maxPulse)

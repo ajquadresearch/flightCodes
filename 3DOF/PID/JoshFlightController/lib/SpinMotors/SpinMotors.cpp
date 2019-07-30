@@ -1,9 +1,8 @@
-// This subrountine allows the motors to spin 
+/////////////////////////////////////////////////////////
+// SPIN MOTORS 
+/////////////////////////////////////////////////////////
+// This subroutine spins the motors on the quadcopter 
 #include <Arduino.h> 	
-
-/////////////////////////////////////////////////////////
-// PULSE LENGTH AND PWM 
-/////////////////////////////////////////////////////////
 
  // Get maximum value for selected PWM resolution (100% Duty)
  int pwmMax = 256;
@@ -20,7 +19,7 @@
  int escPulse3PWM;
  int escPulse4PWM;
 
- // esc
+ // esc pins 
 int escOut1 = 6;
 int escOut2 = 10;
 int escOut3 = 5;
@@ -28,12 +27,7 @@ int escOut4 = 20;
 
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 
-
-/////////////////////////////////////////////////////////
-// ESC INTILIZATION
-/////////////////////////////////////////////////////////
 // Set motors so they are ready to run
-
 void escInitialize()
 {
 
@@ -60,12 +54,8 @@ void escInitialize()
 	return;
 }
 
-/////////////////////////////////////////////////////////
-// CONVERT PULSE TO PWM 
-/////////////////////////////////////////////////////////
 // This function converts the calculate pulse to the PWM signal.
 // Then the PWM signal is written to the motors
-
 void pulsetoPWM()
 {
 	// Convert Mircosecond time to PWM pulse for motors

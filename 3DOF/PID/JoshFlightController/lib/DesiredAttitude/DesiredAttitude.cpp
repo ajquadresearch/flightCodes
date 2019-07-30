@@ -23,55 +23,31 @@ int desiredRollRate;
 // Yaw
 int desiredYawRate;
 
-void getInput()
+void GetDesiredAttitude()
 {
 	// Pitch bandwith of 16
 	if(pitch_ratePulse > 1508)
-	{
 		desiredPitchRate = 1508 - pitch_ratePulse;
-	}
-
 	else if(pitch_ratePulse < 1492)
-	{
 		desiredPitchRate = 1492 - pitch_ratePulse;
-	} 
-	
 	else
-	{
 		desiredPitchRate = 0;
-	}
 
 	// Roll bandwith of 16
 	if(roll_ratePulse > 1508)
-	{
 		desiredRollRate = roll_ratePulse - 1508;
-	}
-
 	else if(roll_ratePulse < 1492)
-	{
 		desiredRollRate = roll_ratePulse - 1492;
-	} 
-	
 	else
-	{
 		desiredRollRate = 0;
-	}
 
 	// Yaw bandwidth of 16
 	if(yaw_ratePulse > 1508)
-	{
 		desiredYawRate = yaw_ratePulse - 1508;
-	}
-
 	else if(yaw_ratePulse < 1492)
-	{
 		desiredYawRate = yaw_ratePulse - 1492 ;
-	} 
-	
 	else
-	{
 		desiredYawRate = 0;
-	}
 
 	desiredYawRate /= 3;
 
