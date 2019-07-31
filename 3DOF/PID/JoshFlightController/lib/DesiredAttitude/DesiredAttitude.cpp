@@ -1,27 +1,18 @@
-/////////////////////////////////////////////////////////
-// INPUT
-/////////////////////////////////////////////////////////
-// Calculate the input signal needed to be sent the the PID function
+//--------------------------------------------------------------------------
+// THIS SUBROUTINE DETERMINES THE DESIRED ATTITUDE OF THE QUADCOPTER FROM 
+// THE HAND HELD CONTROLLER. 
+//--------------------------------------------------------------------------
 
 // Global Variables 
 extern volatile unsigned int roll_ratePulse;
 extern volatile unsigned int pitch_ratePulse;
 extern volatile unsigned int yaw_ratePulse;
 extern float actualPitch, actualRoll;
+int desiredPitchRate = 0, desiredRollRate = 0, desiredYawRate = 0;
 
 // Local Variables
 bool autoLevel = true;
-
-// Pitch
-int autoPitch; 
-int desiredPitchRate;
-
-// Roll 
-int autoRoll;
-int desiredRollRate;
-
-// Yaw
-int desiredYawRate;
+int autoPitch = 0, autoRoll = 0; 
 
 void GetDesiredAttitude()
 {
