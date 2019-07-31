@@ -210,6 +210,7 @@ void loop()
 
 	}	
 
+	// Need to find a way to put this into saftey subroutine 
 	 if (debug == true)
     {
         if ((elapsedTime - lastPrint) >= printTimer)

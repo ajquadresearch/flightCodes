@@ -1,7 +1,7 @@
 
 #include <Arduino.h>
 
-bool debug = true; 
+bool debug = false; 
 // extern unsigned long elapsedTime;
 
 // led light 
