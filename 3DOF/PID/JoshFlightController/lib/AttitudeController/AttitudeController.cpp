@@ -1,8 +1,7 @@
-/////////////////////////////////////////////////////////
-// ATTITUDE CONTROLLER
-/////////////////////////////////////////////////////////
-// This subroutine takes in the desired and actual pitch roll and yaw rates to determine the motor outputs
-
+//-----------------------------------------------------------------------------------------
+// THIS SUBROUTINE TAKES THE DESIRED AND ACTUAL RATE TO DETERMINE THE ROTOR PULSE USING PID
+// THE PULSE OUTPUT IS THEN BOUNDED BY A MIN AND MAX VALUE 
+//------------------------------------------------------------------------------------------
 // Global Variables 
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern float actualPitchRate, actualRollRate, actualYawRate;
@@ -10,36 +9,24 @@ extern volatile unsigned int throttle_Pulse, activateMotor;
 
 
 // Variables
-int escPulse1, escPulse2, escPulse3, escPulse4;
+int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;
 
 // Pitch 
-int errorPitch; 
-int pitchPulse;
-int last_errorPitch;
-int pid_max_pitch = 300;
-float Ipitch;
+int errorPitch = 0, errorRoll = 0, errorYaw = 0;
+int pitchPulse = 0, rollPulse = 0, yawPulse = 0;
+int last_errorPitch = 0, last_errorRoll = 0, last_errorYaw = 0;
+int pid_max_pitch = 250, pid_max_roll = 250, pid_max_yaw = 250;
+float Ipitch = 0, Iroll = 0, Iyaw = 0;
 
+
+// Gains
 int pPitch = 2;
 int dPitch = 18;
 int iPitch = .02;
 
-// Roll
-int errorRoll; 
-int rollPulse;
-int last_errorRoll;
-int pid_max_roll = 300;
-int Iroll;
-
 int pRoll = pPitch;
 int dRoll = dPitch;
 int iRoll = iPitch;
-
-// Yaw 
-int errorYaw; 
-int yawPulse;
-int last_errorYaw;
-int pid_max_yaw = 300;
-int Iyaw;
 
 int pYaw = 4;
 int dYaw = 0;
@@ -110,13 +97,6 @@ void GetAttitudeController()
 	return;
 
 }
-
-/////////////////////////////////////////////////////////
-// BOUND PULSE
-/////////////////////////////////////////////////////////
-// This is a safey feature in the code so the pulses sent to motors won't exced the
-// the max or min of the motors. In this case the min of the motors is 1000 while the
-// max is 2000. Also will activate the motors.
 
 // idle motors 
 int minPulse = 1100;
