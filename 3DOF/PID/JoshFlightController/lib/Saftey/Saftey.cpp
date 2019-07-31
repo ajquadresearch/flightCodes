@@ -1,8 +1,11 @@
 
 #include <Arduino.h>
+//-----------------------------------------------------------------------------------
+// THIS SUBROUTINE INCLUDES THE SATFEY FEATURES AND DEBUGGING.
+//-----------------------------------------------------------------------------------
+
 
 bool debug = false; 
-// extern unsigned long elapsedTime;
 
 // led light 
 int led = 13; 
@@ -11,6 +14,13 @@ int led = 13;
 int printTimer = 5000;
 int lastPrint = 0;
 
+void Blink()
+{
+	digitalWrite(led,HIGH);
+	delay(100);
+	digitalWrite(led,LOW);
+	delay(100);
+}
 
 void SafteyInitialization()
 {
@@ -40,8 +50,14 @@ extern volatile unsigned int activateMotor;
 void controllerCheck()
 {
 	while(activateMotor > 1100)
+	{
 		Serial.println("Turn left controller nobe to 1000");
+		Blink();
+	}
 
 	while(throttle_Pulse > 1100)
+	{
 		Serial.println("Lower throttle pulse to 1000");
+		Blink();
+	}
 }
