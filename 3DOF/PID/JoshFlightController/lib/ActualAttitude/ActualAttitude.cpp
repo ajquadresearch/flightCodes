@@ -1,4 +1,7 @@
-// THIS SUBROUNTINE DETERMINES THE ACTUAL ATTITUDE OF THE QUADCOPTER 
+// ------------------------------------------------------------------------
+// THIS SUBROUTINE DETERMINES THE ACTUAL ATTITUDE OF THE QUADCOPTER USING A 
+// NXP 9DOF ADIAFRUIT IMU. BE SURE TO CALIBRATE BEFORE USE. 
+// -------------------------------------------------------------------------
 
 #include <Arduino.h> 							        //Used for Visual Studio's code (May not have to include this) 
 #include <Wire.h>    							        //I2C communication 
@@ -8,27 +11,13 @@
 #include <Mahony.h>							// Filters for IMU
 //#include <Madgwick.h>
 
-// extern unsigned long elapsedTime; (Why does this work here but not in saftey???)
+// Global Variables 
+float actualPitch = 0, actualRoll = 0, actualYaw = 0;
+float actualPitchRate = 0, actualRollRate = 0, actualYawRate = 0;
 
-// local variables 
-
- float actualPitch;
- float actualRoll;
- float actualYaw;
-
- float pitch_prev;
- float roll_prev;
- float yaw_prev;
-
- float actualPitchRate;
- float actualRollRate;
- float actualYawRate;
-
-
- // Offsets
- float offsetPitch_rate;
- float offsetRoll_rate;
- float offsetYaw_rate;
+// Local Variables
+float pitch_prev = 0, roll_prev = 0, yaw_prev = 0;
+float offsetPitch_rate = 0, offsetRoll_rate = 0, offsetYaw_rate = 0;
 
 Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
 Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
@@ -57,15 +46,11 @@ Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
 
 	// Gyro
 	while(!gyro.begin(GYRO_RANGE_500DPS))
-	{
 		Serial.println("Ooops, no gyro detected ... Check your wiring!");
-	}
 
 	// Accellerometer
 	while(!accelmag.begin(ACCEL_RANGE_4G))
-	{
 		Serial.println("Ooops, no FXOS8700 detected ... Check your wiring!");
-	}
 
 	// Start IMU filter for desired frequency
 	filter.begin(250);
