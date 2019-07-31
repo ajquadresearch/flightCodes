@@ -14,16 +14,10 @@
  int escPulseTime = 4000;
 
  // Value for analog write function 
- int escPulse1PWM;
- int escPulse2PWM;
- int escPulse3PWM;
- int escPulse4PWM;
+ int escPulse1PWM = 0, escPulse2PWM = 0, escPulse3PWM = 0, escPulse4PWM = 0;
 
  // esc pins 
-int escOut1 = 6;
-int escOut2 = 10;
-int escOut3 = 5;
-int escOut4 = 20;
+int escOut1 = 6, escOut2 = 10, escOut3 = 5, escOut4 = 20;
 
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 
