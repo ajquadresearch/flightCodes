@@ -47,6 +47,13 @@ extern bool debug;
 int updateTime = 4000;
 int lastUpdate = 0;
 
+extern int desiredPitchRate;
+extern float actualPitch, actualRoll, actualYaw;
+extern float actualPitchRate, actualRollRate, actualYawRate;
+extern float Ipitch, Iroll, Iyaw;
+extern float offsetPitch_rate, offsetRoll_rate, offsetYaw_rate;
+
+
  /////////////////////////////////////////////////////////
  // INTERUPTS
  /////////////////////////////////////////////////////////
@@ -161,6 +168,33 @@ void InteruptInitialization()
 	return;
  }
 
+ float sumPitch_rate = 0, sumRoll_rate = 0, sumYaw_rate = 0;
+
+void calIMU()
+{
+	for (int loop = 0; loop < 2000; loop++)
+	{
+		if((elapsedTime - lastUpdate) > updateTime)
+		{
+			// Grab angles
+			GetActualAttitude();
+
+			// Sum rates
+			sumPitch_rate += actualPitchRate;
+			sumRoll_rate += actualRollRate;
+			sumYaw_rate += actualYawRate;
+			lastUpdate = elapsedTime;
+
+		}
+	}
+
+	// Calculate Angular Rate offsets
+	offsetPitch_rate = sumPitch_rate/2000;
+	offsetRoll_rate = sumRoll_rate/2000;
+	offsetYaw_rate = sumYaw_rate/2000;
+	
+}
+
 /////////////////////////////////////////////////////////
 // SETUP
 /////////////////////////////////////////////////////////
@@ -175,6 +209,8 @@ void setup()
 	controllerCheck();
 
 	imuIntilization();
+
+	calIMU();
 
 	escInitialize();
 
@@ -207,7 +243,6 @@ void loop()
 
 		// Convert the Pulse to PWM in order to spin the motors 
 		pulsetoPWM();
-
 	}	
 
 	// Need to find a way to put this into saftey subroutine 
@@ -216,7 +251,12 @@ void loop()
         if ((elapsedTime - lastPrint) >= printTimer)
         {
             lastPrint = elapsedTime;
-            Serial.println(SWB);
+			Serial.print(Ipitch);
+			Serial.print(", ");
+			Serial.print(Iroll);
+			Serial.print(", ");
+			Serial.println(Iyaw);
+
         }
 	}
 }

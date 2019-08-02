@@ -3,6 +3,8 @@
 // THE HAND HELD CONTROLLER. 
 //--------------------------------------------------------------------------
 
+
+// Note: the desired rates are putting out zero and nan!! need to fix!! 
 // Global Variables 
 extern volatile unsigned int roll_ratePulse;
 extern volatile unsigned int pitch_ratePulse;
@@ -21,7 +23,7 @@ void GetDesiredAttitude()
 		desiredPitchRate = 1508 - pitch_ratePulse;
 	else if(pitch_ratePulse < 1492)
 		desiredPitchRate = 1492 - pitch_ratePulse;
-	else
+	else 
 		desiredPitchRate = 0;
 
 	// Roll bandwith of 16
@@ -57,6 +59,8 @@ void GetDesiredAttitude()
 
 	desiredRollRate -= autoRoll;
 	desiredRollRate /= 3;
+
+	
 
 	return;
 }

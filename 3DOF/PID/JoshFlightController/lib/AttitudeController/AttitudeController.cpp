@@ -12,25 +12,27 @@ extern volatile unsigned int throttle_Pulse, activateMotor;
 int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;
 
 // Pitch 
-int errorPitch = 0, errorRoll = 0, errorYaw = 0;
+float errorPitch = 0, errorRoll = 0, errorYaw = 0;
 int pitchPulse = 0, rollPulse = 0, yawPulse = 0;
-int last_errorPitch = 0, last_errorRoll = 0, last_errorYaw = 0;
-int pid_max_pitch = 250, pid_max_roll = 250, pid_max_yaw = 250;
+float last_errorPitch = 0, last_errorRoll = 0, last_errorYaw = 0;
 float Ipitch = 0, Iroll = 0, Iyaw = 0;
 
 
 // Gains
-int pPitch = 2;
-int dPitch = 18;
-int iPitch = .02;
+float pPitch = 1.3;
+float dPitch = 18.0;
+float iPitch = 0;
+float pid_max_pitch = 100;
 
-int pRoll = pPitch;
-int dRoll = dPitch;
-int iRoll = iPitch;
+float pRoll = pPitch;
+float dRoll = dPitch;
+float iRoll = iPitch;
+float pid_max_roll = 100;
 
-int pYaw = 4;
-int dYaw = 0;
-int iYaw = 0.02;
+float pYaw = 4.0;
+float dYaw = 0.0;
+float iYaw = 0.02;
+float pid_max_yaw = 100;
 
 void GetAttitudeController()
 {
@@ -38,6 +40,11 @@ void GetAttitudeController()
 	// Pitch
 	errorPitch = desiredPitchRate - actualPitchRate;
 	Ipitch += iPitch*errorPitch; 
+	if(Ipitch > 10)
+		Ipitch = 10;
+	else if(Ipitch < -10)
+		Ipitch = -10;
+
 	pitchPulse = pPitch*errorPitch + dPitch*(errorPitch - last_errorPitch) + Ipitch;
 	last_errorPitch = errorPitch; 
 
@@ -56,6 +63,11 @@ void GetAttitudeController()
 	// Roll 
 	errorRoll = desiredRollRate - actualRollRate;
 	Iroll += iRoll*errorRoll;
+	if(Iroll > 10)
+		Iroll = 10;
+	else if(Iroll < -10)
+		Iroll = -10;
+	
 	rollPulse = pRoll*errorRoll + dRoll*(errorRoll - last_errorRoll) + Iroll;
 	last_errorRoll = errorRoll;
 
@@ -74,6 +86,10 @@ void GetAttitudeController()
 	// Yaw
 	errorYaw = desiredYawRate - actualYawRate;
 	Iyaw += iYaw*errorYaw;
+	if(Iyaw > 10)
+		Iyaw = 10;
+	else if(Iyaw < -10)
+		Iyaw = -10;
 	yawPulse = pYaw*errorYaw +dYaw*(errorYaw - last_errorYaw) + Iyaw;
 	last_errorYaw = errorYaw;
 
@@ -155,6 +171,9 @@ void BoundPulse()
 		escPulse2 = 1000;
 		escPulse3 = 1000;
 		escPulse4 = 1000;
+		// Ipitch = 0;
+		// Iroll = 0;
+		// Iyaw = 0;
 	}
 
 	return;
