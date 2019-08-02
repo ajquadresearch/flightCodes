@@ -11,8 +11,6 @@
 #include <Mahony.h>							// Filters for IMU
 //#include <Madgwick.h>
 
-extern unsigned int elapsedTime;
-
 // Global Variables 
 float actualPitch = 0, actualRoll = 0, actualYaw = 0;
 float actualPitchRate = 0, actualRollRate = 0, actualYawRate = 0;
@@ -26,17 +24,17 @@ Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
 
 // Calibration of magnetometer
 // Offsets applied to raw x/y/z mag values
- float mag_offsets[3] = { -7.98F, -18.24F, -29.89F };
+ float mag_offsets[3] = { 28.00F, 19.49F, 55.95F };
 
 // Soft iron error compensation matrix
- float mag_softiron_matrix[3][3] = {  { 0.990, -0.033,  -0.017 },
-								   	  { -0.033,  0.977, 0.013 },
-								   	  { -0.017, 0.013,  1.035 } };
+ float mag_softiron_matrix[3][3] = {  { 0.898, -0.059,  0.056 },
+								   	  { -0.059,  1.044, -0.26 },
+								   	  { 0.056, -0.26,  1.074 } };
 
- float mag_field_strength = 39.55F;
+ float mag_field_strength = 48.76F;
 
 // Offsets applied to compensate for gyro zero-drift error for x/y/z
- float gyro_zero_offsets[3]  = { 0.0F, 0.0F, 0.0F };
+ float gyro_zero_offsets[3]  = { 0.02F, 0.02F, 0.0F };
 
 // Filter type
 // Mahnony filter is "ligher" than Madwich

@@ -15,30 +15,32 @@ int desiredPitchRate = 0, desiredRollRate = 0, desiredYawRate = 0;
 // Local Variables
 bool autoLevel = true;
 int autoPitch = 0, autoRoll = 0; 
+int deadbandHigh = 1508;
+int deadbandLow = 1492; 
 
 void GetDesiredAttitude()
 {
 	// Pitch bandwith of 16
-	if(pitch_ratePulse > 1508)
-		desiredPitchRate = 1508 - pitch_ratePulse;
-	else if(pitch_ratePulse < 1492)
-		desiredPitchRate = 1492 - pitch_ratePulse;
+	if(pitch_ratePulse > deadbandHigh)
+		desiredPitchRate = deadbandHigh - pitch_ratePulse;
+	else if(pitch_ratePulse < deadbandLow)
+		desiredPitchRate = deadbandLow - pitch_ratePulse;
 	else 
 		desiredPitchRate = 0;
 
 	// Roll bandwith of 16
-	if(roll_ratePulse > 1508)
-		desiredRollRate = roll_ratePulse - 1508;
-	else if(roll_ratePulse < 1492)
-		desiredRollRate = roll_ratePulse - 1492;
+	if(roll_ratePulse > deadbandHigh)
+		desiredRollRate = roll_ratePulse - deadbandHigh;
+	else if(roll_ratePulse < deadbandLow)
+		desiredRollRate = roll_ratePulse - deadbandLow;
 	else
 		desiredRollRate = 0;
 
 	// Yaw bandwidth of 16
-	if(yaw_ratePulse > 1508)
-		desiredYawRate = yaw_ratePulse - 1508;
-	else if(yaw_ratePulse < 1492)
-		desiredYawRate = yaw_ratePulse - 1492 ;
+	if(yaw_ratePulse > deadbandHigh)
+		desiredYawRate = yaw_ratePulse - deadbandHigh;
+	else if(yaw_ratePulse < deadbandLow)
+		desiredYawRate = yaw_ratePulse - deadbandLow ;
 	else
 		desiredYawRate = 0;
 

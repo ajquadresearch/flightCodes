@@ -251,11 +251,11 @@ void loop()
         if ((elapsedTime - lastPrint) >= printTimer)
         {
             lastPrint = elapsedTime;
-			Serial.print(Ipitch);
+			Serial.print(actualPitch);
 			Serial.print(", ");
-			Serial.print(Iroll);
+			Serial.print(actualRoll);
 			Serial.print(", ");
-			Serial.println(Iyaw);
+			Serial.println(actualYaw);
 
         }
 	}
