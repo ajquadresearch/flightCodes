@@ -23,7 +23,7 @@ bool angle = false;
 bool actualRates = false;
 bool reciever = false; 
 bool desiredRates = false;
-bool pulseOutput = true;
+bool pulseOutput = false;
 
 elapsedMicros elapsedTime;
 
