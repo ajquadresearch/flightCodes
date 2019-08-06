@@ -43,10 +43,15 @@
 elapsedMicros elapsedTime;
 extern bool debug;
 
-// Main loop 
+// attitude loop timing 
+long lastUpdate = 0;
 int updateTime = 4000;
-int lastUpdate = 0;
 
+// Print loop timing
+long lastPrint = 0;
+int printTimer = 5000;
+
+// Important variables from other subroutines 
 extern int desiredPitchRate;
 extern float actualPitch, actualRoll, actualYaw;
 extern float actualPitchRate, actualRollRate, actualYawRate;
@@ -168,32 +173,6 @@ void InteruptInitialization()
 	return;
  }
 
- float sumPitch_rate = 0, sumRoll_rate = 0, sumYaw_rate = 0;
-
-void calIMU()
-{
-	for (int loop = 0; loop < 2000; loop++)
-	{
-		if((elapsedTime - lastUpdate) > updateTime)
-		{
-			// Grab angles
-			GetActualAttitude();
-
-			// Sum rates
-			sumPitch_rate += actualPitchRate;
-			sumRoll_rate += actualRollRate;
-			sumYaw_rate += actualYawRate;
-			lastUpdate = elapsedTime;
-
-		}
-	}
-
-	// Calculate Angular Rate offsets
-	offsetPitch_rate = sumPitch_rate/2000;
-	offsetRoll_rate = sumRoll_rate/2000;
-	offsetYaw_rate = sumYaw_rate/2000;
-	
-}
 
 /////////////////////////////////////////////////////////
 // SETUP
@@ -209,8 +188,6 @@ void setup()
 	controllerCheck();
 
 	imuIntilization();
-
-	calIMU();
 
 	escInitialize();
 

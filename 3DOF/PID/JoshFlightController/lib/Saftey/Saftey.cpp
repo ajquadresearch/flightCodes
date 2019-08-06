@@ -5,14 +5,10 @@
 //-----------------------------------------------------------------------------------
 
 
-bool debug = debug; 
+bool debug = true; 
 
 // led light 
 int led = 13; 
-
-// Variables for debugging
-int printTimer = 5000;
-int lastPrint = 0;
 
 void Blink()
 {

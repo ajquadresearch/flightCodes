@@ -27,14 +27,14 @@ Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
  float mag_offsets[3] = { 28.00F, 19.49F, 55.95F };
 
 // Soft iron error compensation matrix
- float mag_softiron_matrix[3][3] = {  { 0.898, -0.059,  0.056 },
-								   	  { -0.059,  1.044, -0.26 },
-								   	  { 0.056, -0.26,  1.074 } };
+ float mag_softiron_matrix[3][3] = { {  0.898,  -0.059,  0.056 },
+									 {  -0.059,  1.044, -0.026 },
+									 {  0.056, -0.026,  1.074 } };
 
  float mag_field_strength = 48.76F;
 
 // Offsets applied to compensate for gyro zero-drift error for x/y/z
- float gyro_zero_offsets[3]  = { 0.02F, 0.02F, 0.0F };
+ float gyro_zero_offsets[3]  = { 0.00F, 0.00F, 0.00F };
 
 // Filter type
 // Mahnony filter is "ligher" than Madwich
@@ -45,7 +45,7 @@ Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
 {
 
 	// Gyro
-	while(!gyro.begin(GYRO_RANGE_500DPS))
+	while(!gyro.begin(GYRO_RANGE_250DPS))
 		Serial.println("Ooops, no gyro detected ... Check your wiring!");
 
 	// Accellerometer
@@ -90,15 +90,15 @@ void GetActualAttitude()
 				  accel_event.acceleration.x, accel_event.acceleration.y, accel_event.acceleration.z,
 				  mx, my, mz);
 
-	 // Degrees (LOOKS LIKE WE WON'T NEED OFFSET FOR ANGLES)
+	 // Degrees 
 	 actualPitch = filter.getRoll();
 	 actualRoll = filter.getPitch();
 	 actualYaw = -1*filter.getYaw(); 										// negative sign added to correct sign convention
 
 	 // Degrees per second 
-	 actualPitchRate = gyro_event.gyro.x*(180/3.14) - offsetPitch_rate;
-	 actualRollRate = gyro_event.gyro.y*(180/3.14) - offsetRoll_rate;
-	 actualYawRate = -1*gyro_event.gyro.z*(180/3.14) - offsetYaw_rate;    // negative sign added to correct sign convention
+	 actualPitchRate = gyro_event.gyro.x*(180/3.14);
+	 actualRollRate = gyro_event.gyro.y*(180/3.14);
+	 actualYawRate = -1*gyro_event.gyro.z*(180/3.14);    // negative sign added to correct sign convention
 
 }
 
