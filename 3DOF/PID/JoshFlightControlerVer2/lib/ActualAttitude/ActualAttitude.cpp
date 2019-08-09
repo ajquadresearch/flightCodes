@@ -101,4 +101,5 @@ void GetActualAttitude()
 	actualPitchRate =  gyro_event.gyro.x * (180/3.14) - offsetPitchRate;
 	actualRollRate = gyro_event.gyro.y * (180/3.14) - offsetRollRate;
 	actualYawRate = -1*gyro_event.gyro.z * (180/3.14) - offsetYawRate;
+	// test
 }
