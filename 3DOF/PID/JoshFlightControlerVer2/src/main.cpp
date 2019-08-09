@@ -16,10 +16,10 @@ int printTimer = 5000;
 // DEBUGGING
 //-----------------------
 // Wait for Serial 
-bool debug = false;
+bool debug = true;
 
 // Print Angles, Print Rates 
-bool angle = false;
+bool angle = true;
 bool actualRates = false;
 bool reciever = false; 
 bool desiredRates = false;

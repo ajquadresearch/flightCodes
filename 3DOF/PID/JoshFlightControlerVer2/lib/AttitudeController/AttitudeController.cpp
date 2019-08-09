@@ -20,7 +20,7 @@ float Ipitch = 0, Iroll = 0, Iyaw = 0;
 // Gains
 float pPitch = 1.3;
 float dPitch = 18.0;
-float iPitch = 0.0;
+float iPitch = 0.00;
 float pid_max_pitch = 100;
 
 float pRoll = pPitch;
@@ -158,9 +158,11 @@ void BoundPulse()
 		escPulse2 = 1000;
 		escPulse3 = 1000;
 		escPulse4 = 1000;
-		// Ipitch = 0;
-		// Iroll = 0;
-		// Iyaw = 0;
+
+		// Reset Integral term until takeoff
+		Ipitch = 0;
+		Iroll = 0;
+		Iyaw = 0;
 	}
 
 	return;
