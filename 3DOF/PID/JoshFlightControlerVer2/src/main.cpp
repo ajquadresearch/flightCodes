@@ -1,6 +1,7 @@
 #include "ActualAttitude.hpp"
 #include "DesiredAttitude.hpp"
 #include "AttitudeController.hpp"
+#include "BatteryCompensation.hpp"
 #include "Safety.hpp"
 #include "SpinMotors.hpp"
 
