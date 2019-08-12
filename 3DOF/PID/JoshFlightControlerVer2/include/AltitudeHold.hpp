@@ -1,2 +1,0 @@
-void GetAltitude();
-void barometerInitialize();

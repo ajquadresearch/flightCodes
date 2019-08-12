@@ -38,7 +38,7 @@ extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 //*******************************************************
 //AltHold Add-In
-extern bool altitudeHold = true;
+bool altitudeHold = true;
 extern volatile unsigned int throttle, base_throttle;
 //*******************************************************
 
@@ -285,6 +285,10 @@ void loop()
 				Serial.print(" Motor4: ");
   				Serial.print(escPulse4);
 				Serial.println();
+			}
+			if (altitudeHold == true){
+				Serial.print("Throttle: ");
+				Serial.println(throttle);
 			}
 		}
 	}

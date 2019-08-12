@@ -2,7 +2,7 @@
 #include <Wire.h>
 
 extern volatile int R[7];
-extern volatile unsigned int throttle, base_throttle;
+volatile unsigned int throttle, base_throttle;
 extern bool altitudeHold;
 
  /////////////////////////////////////////////////////////
@@ -149,7 +149,7 @@ void GetAltitude() {
       if (pid_altitude_setpoint == 0){
 		  pid_altitude_setpoint = actual_pressure;                                  //If not yet set, set the PID altitude setpoint.
 		  base_throttle = R[3];											//When altitude hold is first enabled the current throttle value is stored for calculating throttle -Jaiden
-	  }
+	    }
       //When the throttle stick position is increased or decreased the altitude hold function is partially disabled. The manual_altitude_change variable
       //will indicate if the altitude of the quadcopter is changed by the pilot.
       manual_altitude_change = 0;                                                    //Preset the manual_altitude_change variable to 0.
@@ -159,7 +159,7 @@ void GetAltitude() {
         manual_altitude_change = 1;                                                  //Set the manual_altitude_change variable to 1 to indicate that the altitude is adjusted.
         pid_altitude_setpoint = actual_pressure;                                     //Adjust the setpoint to the actual pressure value so the output of the P- and I-controller are 0.
         manual_throttle = (R[3] - 1600) / 3;                               //To prevent very fast changes in hight limit the function of the throttle.
-	  }
+	    }
 
       if (R[3] < 1400) {                                                   //If the throtttle is lowered below 1400us (40%).
         manual_altitude_change = 1;                                                  //Set the manual_altitude_change variable to 1 to indicate that the altitude is adjusted.
@@ -179,7 +179,7 @@ void GetAltitude() {
       if (pid_error_temp > 10 || pid_error_temp < -10) {                             //If the error between the setpoint and the actual pressure is larger than 10 or smaller then -10.
         pid_error_gain_altitude = ((abs(pid_error_temp) - 10) / 20.0)/2;                 //The positive pid_error_gain_altitude variable is calculated based based on the error.
         if (pid_error_gain_altitude > 3)pid_error_gain_altitude = 3;                 //To prevent extreme P-gains it must be limited to 3.
-	  }
+	    }
 
       //In the following section the I-output is calculated. It's an accumulation of errors over time.
       //The time factor is removed as the program loop runs at 250Hz.
@@ -195,7 +195,7 @@ void GetAltitude() {
       if (pid_output_altitude > pid_max_altitude) pid_output_altitude = pid_max_altitude;
       else if (pid_output_altitude < pid_max_altitude * -1)pid_output_altitude = pid_max_altitude * -1;
 
-	  throttle = base_throttle + pid_output_altitude + manual_throttle;					//Caclulate throttle output that is passed to the ESCs -Jaiden
+	    throttle = base_throttle + pid_output_altitude + manual_throttle;					//Caclulate throttle output that is passed to the ESCs -Jaiden
     }
  
     
