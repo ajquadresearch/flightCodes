@@ -16,8 +16,9 @@ void Blink()
 
 void SafteyInitialization()
 {
+    // set led pin direction
     pinMode(led, OUTPUT);
-
+    
     // Make sure quadcopter is in correct starting position
     while( R[5] > 1100 )
     {
@@ -28,6 +29,13 @@ void SafteyInitialization()
     while( R[3] > 1100)
     {
         Serial.println("Move throttle to low position");
+        Blink();
+    }
+
+    // Make sure reciever signals are greater than 990
+    while(R[1] < 990 || R[2] < 990 || R[3] < 990 || R[4] < 990)
+    {
+        Serial.println("Reciever signals are less than 990");
         Blink();
     }
 
