@@ -1,7 +1,6 @@
 #include "ActualAttitude.hpp"
 #include "DesiredAttitude.hpp"
 #include "AttitudeController.hpp"
-#include "BatteryCompensation.hpp"
 #include "Safety.hpp"
 #include "SpinMotors.hpp"
 
@@ -17,11 +16,12 @@ int printTimer = 5000;
 // DEBUGGING
 //-----------------------
 // Wait for Serial 
-bool debug = true;
+bool debug = false;
 
 // Print Angles, Print Rates 
 bool angle = true;
 bool actualRates = false;
+bool accelerations = false;
 bool reciever = false; 
 bool desiredRates = false;
 bool pulseOutput = false;
@@ -33,6 +33,7 @@ extern float actualPitch, actualRoll, actualYaw;
 extern float actualPitchRate, actualRollRate, actualYawRate;
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
+extern float accelerationX, accelerationY, accelerationZ, averageZ;
 
 //----------------------
 // INTERURUPTS  
@@ -125,7 +126,9 @@ void RecieverIntilization()
 //IMU CALIBRATION 
 //-----------------------------------
 float offsetPitchRate = 0, offsetRollRate = 0, offsetYawRate = 0;
+float offsetAccX = 0, offsetAccY = 0, offsetAccZ = 0;
 float sumPitchRate = 0, sumRollRate = 0, sumYawRate = 0;
+float sumAccX = 0, sumAccY = 0, sumAccZ = 0;
 int i = 0;
 
 void IMUCalibration()
@@ -140,11 +143,17 @@ void IMUCalibration()
 			sumPitchRate += actualPitchRate;
 			sumRollRate += actualRollRate;
 			sumYawRate += actualYawRate; 
+			sumAccX += accelerationX;
+			sumAccY += accelerationY;
+			sumAccZ += accelerationZ;
 		}
 	}
 	offsetPitchRate = sumPitchRate/2000;
 	offsetRollRate = sumRollRate/2000;
 	offsetYawRate = sumYawRate/2000;
+	offsetAccX = sumAccX/2000;
+	offsetAccY = sumAccY/2000;
+	offsetAccZ = sumAccZ/2000 + 9.81;
 	Serial.println("Finished Calibration");
 }
 
@@ -205,6 +214,18 @@ void loop()
 				Serial.print(actualRoll);
 				Serial.print(" Yaw: ");
 				Serial.print(actualYaw);
+				Serial.println();
+			}
+			if (accelerations == true)
+			{
+				Serial.print(" Acc X: ");
+				Serial.println(accelerationX);
+				Serial.print(" Acc Y: ");
+				Serial.println(accelerationY);
+				Serial.print(" Acc Z: ");
+				Serial.println(accelerationZ);
+				Serial.print(" Acc Zave: ");
+				Serial.print(averageZ);
 				Serial.println();
 			}
 			// Test IMU

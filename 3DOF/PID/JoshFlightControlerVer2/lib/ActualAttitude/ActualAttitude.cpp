@@ -13,20 +13,21 @@ Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
 Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
 
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
+extern float offsetAccX, offsetAccY, offsetAccZ;
 
 //------------------------
 // IMU CALIBRATION VALUES
 //------------------------
 
 // Offsets applied to raw x/y/z mag values
-float mag_offsets[3] = { 28.00F, 19.49F, 55.95F };
+float mag_offsets[3] = { -20.02F, -26.84F, 48.86F };
 
 // Soft iron error compensation matrix
-float mag_softiron_matrix[3][3] = { {  0.898,  -0.059,  0.056 },
-									 {  -0.059,  1.044, -0.026 },
-									 {  0.056, -0.026,  1.074 } };
+float mag_softiron_matrix[3][3] = { {  0.953,  -0.0019,  0.009 },
+									 {  -0.059,  1.022, -0.024 },
+									 {  0.009, -0.024,  1.028  } };
 
-float mag_field_strength = 48.76F;
+float mag_field_strength = 48.75F;
 
 // Offsets applied to compensate for gyro zero-drift error for x/y/z
 float gyro_zero_offsets[3]      = { 0.0F, 0.0F, 0.0F };
@@ -41,6 +42,12 @@ Madgwick filter;
 // Global variables 
 float actualPitch = 0, actualRoll = 0, actualYaw = 0;
 float actualPitchRate = 0, actualRollRate = 0, actualYawRate = 0;
+float accelerationX = 0, accelerationY = 0, accelerationZ = 0;
+
+// Variables for filter 
+float averageZ = 0, sumZ = 0;
+float storage[25] = {};
+int counter = 0;
 
 void IMUInitialization()
 {
@@ -94,12 +101,25 @@ void GetActualAttitude()
 			accel_event.acceleration.x, accel_event.acceleration.y, accel_event.acceleration.z,
 			mx, my, mz);
 
-	actualRoll = filter.getPitch() + 2.5;
-	actualPitch = filter.getRoll() + 2.8;
+	actualRoll = filter.getPitch();
+	actualPitch = filter.getRoll();
 	actualYaw = -1*filter.getYaw();
 
-	actualPitchRate =  gyro_event.gyro.x * (180/3.14) - offsetPitchRate;
-	actualRollRate = gyro_event.gyro.y * (180/3.14) - offsetRollRate;
-	actualYawRate = -1*gyro_event.gyro.z * (180/3.14) - offsetYawRate;
-	// test
+	actualPitchRate =  gx - offsetPitchRate;
+	actualRollRate = gy - offsetRollRate;
+	actualYawRate = -1*gz - offsetYawRate;
+
+	accelerationX = -accel_event.acceleration.y - offsetAccX;
+	accelerationY = -accel_event.acceleration.x - offsetAccY;
+	accelerationZ = accel_event.acceleration.z - offsetAccZ;
+
+	 // Average the acceleration data 
+	 sumZ += accelerationZ;
+	 sumZ -= storage[counter];
+	 averageZ = sumZ/25;
+	 storage[counter] = accelerationZ;
+	 if(counter == 24)
+	 	counter = 0;
+	 else
+	 	counter++;
 }
