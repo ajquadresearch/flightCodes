@@ -1,6 +1,7 @@
 //----------------------------------------------------------------------------------
 // THIS SUBROUTINE CONTROLS THE START AND STOP OF THE MOTORS AND THE TAKEOFF ROUTINE
 //----------------------------------------------------------------------------------
+// Note: still need to create a landing routine
 extern volatile unsigned int R[7];
 extern int throttle;
 extern float averageZ;
@@ -31,11 +32,14 @@ void GetMode()
     else if (R[6] > 1700) 
         takeOff = 2;                     // Auto take off will be preformed
     else
-        takeOff = 0;
+        takeOff = 0;                     // No takeOff mode
 
 
     if( takeOff == 1 && start == 1) 
-        throttle = R[3];                                    
+    {
+        throttle = R[3];   
+        // takeOffDetected == 1;
+    }                                 
     if( takeOff == 2 && start == 1 && takeOffDetected == 0) // autoTakeOff
     {
         if( R[3] > 1400 && R[3] < 1750) // put throttle stick to center channel
@@ -54,9 +58,9 @@ void GetMode()
 
         }
     } 
-    if( takeOff == 2 && start == 1 && takeOffDetected == 1)
+    if( takeOff == 2 && start == 1 && takeOffDetected == 1)     // Take off has been completed 
     {
-        throttle = R[3] + takeOffThrottle;
+        throttle = R[3] + takeOffThrottle; 
     }    
 
 }
