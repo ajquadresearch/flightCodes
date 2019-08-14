@@ -43,6 +43,7 @@ Madgwick filter;
 float actualPitch = 0, actualRoll = 0, actualYaw = 0;
 float actualPitchRate = 0, actualRollRate = 0, actualYawRate = 0;
 float accelerationX = 0, accelerationY = 0, accelerationZ = 0;
+float magAcceleration = 0;
 
 // Variables for filter 
 float averageZ = 0, sumZ = 0;
@@ -112,6 +113,8 @@ void GetActualAttitude()
 	accelerationX = -accel_event.acceleration.y - offsetAccX;
 	accelerationY = -accel_event.acceleration.x - offsetAccY;
 	accelerationZ = accel_event.acceleration.z - offsetAccZ;
+
+	magAcceleration = sqrt(accelerationX*accelerationX + accelerationY*accelerationY + accelerationZ*accelerationZ);
 
 	 // Average the acceleration data 
 	 sumZ += accelerationZ;

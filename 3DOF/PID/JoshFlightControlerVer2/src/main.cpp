@@ -1,6 +1,7 @@
 #include "ActualAttitude.hpp"
 #include "DesiredAttitude.hpp"
 #include "AttitudeController.hpp"
+#include "StartStopTakeOff.hpp"
 #include "Safety.hpp"
 #include "SpinMotors.hpp"
 
@@ -16,15 +17,16 @@ int printTimer = 5000;
 // DEBUGGING
 //-----------------------
 // Wait for Serial 
-bool debug = false;
+bool debug = true;
 
 // Print Angles, Print Rates 
-bool angle = true;
+bool angle = false;
 bool actualRates = false;
 bool accelerations = false;
 bool reciever = false; 
 bool desiredRates = false;
-bool pulseOutput = false;
+bool pulseOutput = true;
+
 
 elapsedMicros elapsedTime;
 
@@ -32,8 +34,8 @@ elapsedMicros elapsedTime;
 extern float actualPitch, actualRoll, actualYaw;
 extern float actualPitchRate, actualRollRate, actualYawRate;
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
-extern int escPulse1, escPulse2, escPulse3, escPulse4;
-extern float accelerationX, accelerationY, accelerationZ, averageZ;
+extern int escPulse1, escPulse2, escPulse3, escPulse4, throttle;
+extern float accelerationX, accelerationY, accelerationZ, averageZ, magAcceleration;
 
 //----------------------
 // INTERURUPTS  
@@ -153,8 +155,7 @@ void IMUCalibration()
 	offsetYawRate = sumYawRate/2000;
 	offsetAccX = sumAccX/2000;
 	offsetAccY = sumAccY/2000;
-	offsetAccZ = sumAccZ/2000 + 9.81;
-	Serial.println("Finished Calibration");
+	offsetAccZ = sumAccZ/2000 - 9.81;
 }
 
 
@@ -192,6 +193,7 @@ void loop()
 	if ((elapsedTime - lastUpdate) > updateTime)
 	{
 	 	lastUpdate = elapsedTime;
+		GetMode();
 	 	GetActualAttitude();
 		GetDesiredAttitude();
 		GetAttitudeController();
@@ -218,13 +220,13 @@ void loop()
 			}
 			if (accelerations == true)
 			{
-				Serial.print(" Acc X: ");
-				Serial.println(accelerationX);
-				Serial.print(" Acc Y: ");
-				Serial.println(accelerationY);
-				Serial.print(" Acc Z: ");
-				Serial.println(accelerationZ);
-				Serial.print(" Acc Zave: ");
+				// Serial.print(" Acc X: ");
+				// Serial.println(accelerationX);
+				// Serial.print(" Acc Y: ");
+				// Serial.println(accelerationY);
+				// Serial.print(" Acc Z: ");
+				// Serial.println(accelerationZ);
+				// Serial.print(" Acc Zave: ");
 				Serial.print(averageZ);
 				Serial.println();
 			}

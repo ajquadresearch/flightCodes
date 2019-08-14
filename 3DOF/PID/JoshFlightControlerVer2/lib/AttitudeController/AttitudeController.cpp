@@ -6,6 +6,7 @@
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern float actualPitchRate, actualRollRate, actualYawRate;
 extern volatile unsigned int R[7];
+extern int start, throttle;
 
 // Variables
 int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;
@@ -92,10 +93,10 @@ void GetAttitudeController()
 	}
 
 	// Calculate pulses to motors
-	escPulse1 = R[3] - rollPulse + pitchPulse + yawPulse;
-	escPulse2 = R[3] - rollPulse - pitchPulse - yawPulse;
-	escPulse3 = R[3] + rollPulse - pitchPulse + yawPulse; 
-	escPulse4 = R[3] + rollPulse + pitchPulse - yawPulse;
+	escPulse1 = throttle; // - rollPulse + pitchPulse + yawPulse;
+	escPulse2 = throttle; // - rollPulse - pitchPulse - yawPulse;
+	escPulse3 = throttle; // + rollPulse - pitchPulse + yawPulse; 
+	escPulse4 = throttle; // + rollPulse + pitchPulse - yawPulse;
 
 	return;
 
@@ -151,18 +152,12 @@ void BoundPulse()
 		escPulse4 = minPulse;
 	}
 
-	// Start/Kill MOTORS
-	if( R[5] < 1100)
+	if(start == 0)
 	{
 		escPulse1 = 1000;
 		escPulse2 = 1000;
 		escPulse3 = 1000;
 		escPulse4 = 1000;
-
-		// Reset Integral term until takeoff
-		Ipitch = 0;
-		Iroll = 0;
-		Iyaw = 0;
 	}
 
 	return;
