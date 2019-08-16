@@ -5,6 +5,8 @@
 #include "Safety.hpp"
 #include "SpinMotors.hpp"
 
+extern float voltage;
+
 // attitude loop
 int updateTime = 4000;
 long lastUpdate = 0;
@@ -17,7 +19,7 @@ int printTimer = 5000;
 // DEBUGGING
 //-----------------------
 // Wait for Serial 
-bool debug = true;
+bool debug = false;
 
 // Print Angles, Print Rates 
 bool angle = true;
@@ -25,6 +27,7 @@ bool actualRates = false;
 bool reciever = false; 
 bool desiredRates = false;
 bool pulseOutput = false;
+bool battery = false;
 
 elapsedMicros elapsedTime;
 
@@ -186,6 +189,7 @@ void loop()
 	 	GetActualAttitude();
 		GetDesiredAttitude();
 		GetAttitudeController();
+		GetBatteryCompensation();
 		BoundPulse();
 		PulsetoPWM();
 	}
@@ -263,6 +267,12 @@ void loop()
   				Serial.print(escPulse3);
 				Serial.print(" Motor4: ");
   				Serial.print(escPulse4);
+				Serial.println();
+			}
+			if(battery == true)
+			{
+				Serial.print(" Battery Voltage: ");
+	 			Serial.print(voltage);
 				Serial.println();
 			}
 		}

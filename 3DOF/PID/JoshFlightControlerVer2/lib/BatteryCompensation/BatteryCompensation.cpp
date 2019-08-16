@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 #define led 13 		   //Warning LED Pin
-#define batt 32      //Battery Monitor Pin
+#define batt 23      //Battery Monitor Pin
 #define N 1000
 #define battComp 40.0 
 #define battSlope 0.013279114088
@@ -22,11 +22,9 @@ void GetBatteryCompensation()
 {
   //Battery Voltage Monitoring//
   sum += analogRead(batt);
-  if (++count == N) 
-    voltage = battSlope*sum/count + battIntercept; count = 0;  sum = 0; //Moving Average Filter
-  if (voltage < lowBatt) 
-    digitalWrite(led,HIGH); //Battery Low -> Warning LED On
+  if (++count == N) {voltage = battSlope*sum/count + battIntercept; count = 0;  sum = 0; }//Moving Average Filter
+  if (voltage < lowBatt){digitalWrite(led,HIGH);} //Battery Low -> Warning LED On
   if (voltage < 12.40 && voltage > 6.0) {   //Battery Connected?
     escPulse1 += (12.40 - voltage)*battComp; escPulse2 += (12.40 - voltage)*battComp;
     escPulse3 += (12.40 - voltage)*battComp; escPulse4 += (12.40 - voltage)*battComp;}
-}       
+}
