@@ -5,11 +5,11 @@
 #include "Safety.hpp"
 #include "SpinMotors.hpp"
 
-// attitude loop
+// Attitude loop timing 
 int updateTime = 4000;
 long lastUpdate = 0;
 
-// Printing
+// Printing loop timing 
 long lastPrint = 0;
 int printTimer = 5000;
 
@@ -17,7 +17,7 @@ int printTimer = 5000;
 // DEBUGGING
 //-----------------------
 // Wait for Serial 
-bool debug = true;
+bool debug = false;
 
 // Print Angles, Print Rates 
 bool angle = false;
@@ -26,6 +26,7 @@ bool accelerations = false;
 bool reciever = false; 
 bool desiredRates = false;
 bool pulseOutput = true;
+bool state = false; 
 
 
 elapsedMicros elapsedTime;
@@ -36,6 +37,8 @@ extern float actualPitchRate, actualRollRate, actualYawRate;
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern int escPulse1, escPulse2, escPulse3, escPulse4, throttle;
 extern float accelerationX, accelerationY, accelerationZ, averageZ, magAcceleration;
+extern bool startMotor;
+extern int flightMode;
 
 //----------------------
 // INTERURUPTS  
@@ -286,6 +289,16 @@ void loop()
   				Serial.print(escPulse3);
 				Serial.print(" Motor4: ");
   				Serial.print(escPulse4);
+				Serial.println();
+			}
+			if(state == true)
+			{
+				Serial.print("Time Elapsed ");
+	 			Serial.print(elapsedTime);
+				Serial.print(" flightmode ");
+  				Serial.print(flightMode);
+  				Serial.print(" startMotor: ");
+  				Serial.print(startMotor);
 				Serial.println();
 			}
 		}
