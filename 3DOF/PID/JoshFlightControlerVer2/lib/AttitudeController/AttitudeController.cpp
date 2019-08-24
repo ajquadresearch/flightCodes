@@ -2,17 +2,11 @@
 // THIS SUBROUTINE TAKES THE DESIRED AND ACTUAL RATE TO DETERMINE THE ROTOR PULSE USING PID
 // THE PULSE OUTPUT IS THEN BOUNDED BY A MIN AND MAX VALUE 
 //------------------------------------------------------------------------------------------
-/* Note: Need to adjust the subroutine 
-Inputs: desired and actual rates:
-Outputs: pitchPulse, rollPulse, yawPulse
-*/
-
 // Global Variables 
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern float actualPitchRate, actualRollRate, actualYawRate;
 extern volatile unsigned int R[7];
-extern int throttle;
-extern bool startMotor;
+extern int start, throttle;
 
 // Variables
 int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;
@@ -37,7 +31,7 @@ float pid_max_roll = 100;
 
 float pYaw = 4.0;
 float dYaw = 0.0;
-float iYaw = 0.00;
+float iYaw = 0.02;
 float pid_max_yaw = 100;
 
 void GetAttitudeController()
@@ -99,10 +93,10 @@ void GetAttitudeController()
 	}
 
 	// Calculate pulses to motors
-	escPulse1 = throttle - rollPulse + pitchPulse + yawPulse;
-	escPulse2 = throttle - rollPulse - pitchPulse - yawPulse;
-	escPulse3 = throttle + rollPulse - pitchPulse + yawPulse; 
-	escPulse4 = throttle + rollPulse + pitchPulse - yawPulse;
+	escPulse1 = throttle; // - rollPulse + pitchPulse + yawPulse;
+	escPulse2 = throttle; // - rollPulse - pitchPulse - yawPulse;
+	escPulse3 = throttle; // + rollPulse - pitchPulse + yawPulse; 
+	escPulse4 = throttle; // + rollPulse + pitchPulse - yawPulse;
 
 	return;
 
@@ -158,7 +152,7 @@ void BoundPulse()
 		escPulse4 = minPulse;
 	}
 
-	if(startMotor == false)
+	if(start == 0)
 	{
 		escPulse1 = 1000;
 		escPulse2 = 1000;

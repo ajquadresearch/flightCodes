@@ -59,10 +59,10 @@ void PulsetoPWM()
 	escPulse4PWM = escPulse4*pwmMax/escPulseTime;
 
 	// Send PWM pulse to motors
-	analogWrite(escOut1, escPulse1PWM);
-  	analogWrite(escOut2, escPulse2PWM);
-  	analogWrite(escOut3, escPulse3PWM);
-  	analogWrite(escOut4, escPulse4PWM);
+	// analogWrite(escOut1, escPulse1PWM);
+  	// analogWrite(escOut2, escPulse2PWM);
+  	// analogWrite(escOut3, escPulse3PWM);
+  	// analogWrite(escOut4, escPulse4PWM);
 
 	return;
 }

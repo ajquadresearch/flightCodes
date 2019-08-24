@@ -5,9 +5,9 @@
 extern volatile unsigned int R[7];
 extern int throttle;
 extern float averageZ;
-bool startMotor = false, takeOff = false;
-int throttle = 1100;
-int flightMode = 1;
+float startUpMagAcceleration = 9.81; // need to find a way to take intial values at startup 
+int takeOff = 0, takeOffDetected = 0;
+int start = 0, throttle = 1100;
 int takeOffThrottle = 0;
 #include <Arduino.h>
 
@@ -16,75 +16,53 @@ int takeOffThrottle = 0;
 
 void GetMode()
 {
-    // Determine Quadcopter state
-    if( R[5] > 1500)                        // Motor state 
+    // Get Ready for takeOff
+    if ( R[5] < 1100)
     {
-        startMotor = true;
-    }
-    else 
-    {
-        startMotor = false;
-        takeOff = false;
-        takeOffThrottle = 0;
-    }
+        start = 0;                                               
+        takeOffDetected = 0;             // Reset take off detection 
+        takeOffThrottle = 0;             // Reset throttle
 
-    if( R[6] < 1200)                        // Manual Flight 
-    {
-        flightMode = 1;
     }
-    else if (R[6] > 1200 && R[6] < 1700)    // Auto takeoff 
-    {
-        flightMode = 2;
-    }
-    else                                    // Auto landing 
-    {
-        flightMode = 3;
-    }
+    else
+        start = 1;                       // Idle motors
+    
+    if ( R[6] > 1400 && R[6] < 1700)
+        takeOff = 1;                     // Manual take off will be preformed 
+    else if (R[6] > 1700) 
+        takeOff = 2;                     // Auto take off will be preformed
+    else
+        takeOff = 0;                     // No takeOff mode
 
-    // Procedures for each state 
-    if(startMotor == true && flightMode == 1) // Manual Flight
-    {
-        throttle = R[3];
-    }
 
-    if( startMotor == true && flightMode == 2 && takeOff == false) // auto take off 
+    if( takeOff == 1 && start == 1) 
     {
-        if(R[3] > 1400 && R[3] < 1600)
+        throttle = R[3];   
+        // takeOffDetected == 1;
+    }                                 
+    if( takeOff == 2 && start == 1 && takeOffDetected == 0) // autoTakeOff
+    {
+        if( R[3] > 1400 && R[3] < 1750) // put throttle stick to center channel
         {
             throttle++;
-            if(throttle >= 1750)
+            if(throttle > 1600)         
             {
-                throttle = 1750;
-                takeOffThrottle = 0;
+                takeOffThrottle = 0; // Failed to takeOff 
             }
-            if(averageZ > 10.15)
+            if( (averageZ - startUpMagAcceleration) < -1 ) // Threshold for take off detection
             {
-                takeOff = true;
+                takeOffDetected = 1;                       
                 takeOffThrottle = throttle - 1530;
+                Serial.println(takeOffDetected); // Currently for debugging
             }
-        }
-    }
 
-    if(startMotor == true && flightMode == 2 && takeOff == true) // Once quadcopter is in the air 
+        }
+    } 
+    if( takeOff == 2 && start == 1 && takeOffDetected == 1)     // Take off has been completed 
     {
-        throttle = R[3] + takeOffThrottle;
-    }
+        throttle = R[3] + takeOffThrottle; 
+    }    
 
-    if(startMotor == true && flightMode == 3 && takeOff == true) // Auto landing 
-    {
-        if(throttle > 1100)
-        {
-            throttle--;
-        }
-        if(throttle <= 1100)
-        {
-            takeOff = false;
-        }
-    }
-
-
-    
-    
 }
 
     
