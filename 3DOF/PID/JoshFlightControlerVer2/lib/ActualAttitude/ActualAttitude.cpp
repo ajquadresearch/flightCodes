@@ -19,6 +19,7 @@ extern float offsetPitchRate, offsetRollRate, offsetYawRate;
 //------------------------
 
 // Offsets applied to raw x/y/z mag values
+<<<<<<< HEAD
  float mag_offsets[3] = { 9.16F, -30.86F, 44.09F };
 
 // Soft iron error compensation matrix
@@ -27,6 +28,16 @@ extern float offsetPitchRate, offsetRollRate, offsetYawRate;
 									 {  -0.018, -0.006,  1.034 } };
 
  float mag_field_strength = 38.18F;
+=======
+float mag_offsets[3] = { 9.16F, -30.86F, 44.09F };
+
+// Soft iron error compensation matrix
+float mag_softiron_matrix[3][3] = { {  0.939,  -0.020,  -0.018 },
+									 {  -0.020,  1.030, -0.006 },
+									 {  -0.018, -0.006,  1.034 } };
+
+float mag_field_strength = 38.18F;
+>>>>>>> BatteryCompensation
 
 // Offsets applied to compensate for gyro zero-drift error for x/y/z
 float gyro_zero_offsets[3]      = { 0.0F, 0.0F, 0.0F };
@@ -94,8 +105,8 @@ void GetActualAttitude()
 			accel_event.acceleration.x, accel_event.acceleration.y, accel_event.acceleration.z,
 			mx, my, mz);
 
-	actualRoll = filter.getPitch() + 2.5;
-	actualPitch = filter.getRoll() + 2.8;
+	actualRoll = filter.getPitch();
+	actualPitch = filter.getRoll();
 	actualYaw = -1*filter.getYaw();
 
 	actualPitchRate =  gyro_event.gyro.x * (180/3.14) - offsetPitchRate;

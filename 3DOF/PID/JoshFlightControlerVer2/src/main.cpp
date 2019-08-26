@@ -4,9 +4,14 @@
 //*****************************
 #include "DesiredAttitude.hpp"
 #include "AttitudeController.hpp"
+#include "BatteryCompensation.hpp"
 #include "Safety.hpp"
 #include "SpinMotors.hpp"
 
+<<<<<<< HEAD
+=======
+extern float voltage;
+>>>>>>> BatteryCompensation
 
 // attitude loop
 int updateTime = 4000;
@@ -28,6 +33,7 @@ bool actualRates = false;
 bool reciever = false; 
 bool desiredRates = false;
 bool pulseOutput = false;
+bool battery = false;
 
 elapsedMicros elapsedTime;
 
@@ -207,6 +213,7 @@ void loop()
 		GetAltitude();
 		//*****************************
 		GetAttitudeController();
+		GetBatteryCompensation();
 		BoundPulse();
 		PulsetoPWM();
 	}
@@ -286,9 +293,17 @@ void loop()
   				Serial.print(escPulse4);
 				Serial.println();
 			}
+<<<<<<< HEAD
 			if (altitudeHold == true){
 				Serial.print("Throttle: ");
 				Serial.println(throttle);
+=======
+			if(battery == true)
+			{
+				Serial.print(" Battery Voltage: ");
+	 			Serial.print(voltage);
+				Serial.println();
+>>>>>>> BatteryCompensation
 			}
 		}
 	}
