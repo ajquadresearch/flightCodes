@@ -10,6 +10,10 @@ extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 extern volatile int R[7];
+extern float accelerationX, accelerationY, accelerationZ, averageZ, magAcceleration;
+extern float offsetAccX, offsetAccY, offsetAccZ;
+extern bool startMotor;
+extern int flightMode;
 
 // Variables
 

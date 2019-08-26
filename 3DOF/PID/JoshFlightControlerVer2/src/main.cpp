@@ -5,6 +5,7 @@
 #include "AttitudeController.hpp"
 #include "Safety.hpp"
 #include "SpinMotors.hpp"
+#include "ModeDetection.hpp"
 
 // attitude loop
 const int updateTime = 4000;
@@ -23,9 +24,11 @@ bool debug = false;
 // Print Angles, Print Rates 
 bool angle = false;
 bool actualRates = false;
+bool accelerations = false;
 bool reciever = false; 
 bool desiredRates = false;
-bool pulseOutput = true;
+bool pulseOutput = false;
+bool state = false; 
 
 elapsedMicros elapsedTime;
 
@@ -36,6 +39,9 @@ extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
 extern int pitchPulse, rollPulse, yawPulse;
+extern float accelerationX, accelerationY, accelerationZ, averageZ, magAcceleration;
+extern bool startMotor;
+extern int flightMode;
 
 //----------------------
 // INTERURUPTS  
@@ -130,6 +136,8 @@ void RecieverIntilization()
 float offsetPitchRate = 0, offsetRollRate = 0, offsetYawRate = 0;
 float sumPitchRate = 0, sumRollRate = 0, sumYawRate = 0;
 int i = 0;
+float offsetAccX, offsetAccY, offsetAccZ;
+float sumAccX = 0, sumAccY = 0, sumAccZ = 0;
 
 void IMUCalibration()
 {
@@ -143,11 +151,17 @@ void IMUCalibration()
 			sumPitchRate += actualPitchRate;
 			sumRollRate += actualRollRate;
 			sumYawRate += actualYawRate; 
+			sumAccX += accelerationX;
+			sumAccY += accelerationY;
+			sumAccZ += accelerationZ;
 		}
 	}
 	offsetPitchRate = sumPitchRate/2000;
 	offsetRollRate = sumRollRate/2000;
 	offsetYawRate = sumYawRate/2000;
+	offsetAccX = sumAccX/2000;
+	offsetAccY = sumAccY/2000;
+	offsetAccZ = sumAccZ/2000 - 9.81;
 	Serial.println("Finished Calibration");
 }
 
@@ -186,6 +200,7 @@ void loop()
 	if ((elapsedTime - lastUpdate) > updateTime)
 	{
 	 	lastUpdate = elapsedTime;
+		GetMode();
 	 	GetActualAttitude();
 		GetDesiredAttitude();
 		GetAttitudeController();
@@ -221,6 +236,18 @@ void loop()
   				Serial.print(actualRollRate);
   				Serial.print(" YawRate: ");
   				Serial.print(actualYawRate);
+				Serial.println();
+			}
+			if (accelerations == true)
+			{
+				// Serial.print(" Acc X: ");
+				// Serial.println(accelerationX);
+				// Serial.print(" Acc Y: ");
+				// Serial.println(accelerationY);
+				// Serial.print(" Acc Z: ");
+				// Serial.println(accelerationZ);
+				// Serial.print(" Acc Zave: ");
+				Serial.print(averageZ);
 				Serial.println();
 			}
 			// Test Reciever 
@@ -266,6 +293,16 @@ void loop()
   				Serial.print(escPulse3);
 				Serial.print(" Motor4: ");
   				Serial.print(escPulse4);
+				Serial.println();
+			}
+			if(state == true)
+			{
+				Serial.print("Time Elapsed ");
+	 			Serial.print(elapsedTime);
+				Serial.print(" flightmode ");
+  				Serial.print(flightMode);
+  				Serial.print(" startMotor: ");
+  				Serial.print(startMotor);
 				Serial.println();
 			}
 		}

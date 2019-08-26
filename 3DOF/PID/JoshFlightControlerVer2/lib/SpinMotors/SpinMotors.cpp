@@ -11,6 +11,11 @@ extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
 extern volatile int R[7];
 extern int pitchPulse, rollPulse, yawPulse;
+extern float offsetAccX, offsetAccY, offsetAccZ;
+extern float accelerationX, accelerationY, accelerationZ, averageZ, magAcceleration;
+extern bool startMotor;
+extern int flightMode;
+extern int throttle;
 
 int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;
 
@@ -67,10 +72,10 @@ const int maxPulse = 2000;
 void BoundPulse()
 {
 	// Calculate pulses to motors
-	escPulse1 = R[3] - rollPulse + pitchPulse + yawPulse;
-	escPulse2 = R[3] - rollPulse - pitchPulse - yawPulse;
-	escPulse3 = R[3] + rollPulse - pitchPulse + yawPulse; 
-	escPulse4 = R[3] + rollPulse + pitchPulse - yawPulse;
+	escPulse1 = throttle - rollPulse + pitchPulse + yawPulse;
+	escPulse2 = throttle - rollPulse - pitchPulse - yawPulse;
+	escPulse3 = throttle + rollPulse - pitchPulse + yawPulse; 
+	escPulse4 = throttle + rollPulse + pitchPulse - yawPulse;
 	
 	// Upper Bound 
 	if (escPulse1 > maxPulse)
@@ -115,7 +120,7 @@ void BoundPulse()
 	}
 
 	// Start/Kill MOTORS
-	if( R[5] < 1100)
+	if( startMotor == false)
 	{
 		escPulse1 = 1000;
 		escPulse2 = 1000;

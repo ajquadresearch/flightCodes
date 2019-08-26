@@ -20,6 +20,17 @@ extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
 extern volatile int R[7];
+extern float offsetAccX, offsetAccY, offsetAccZ;
+extern bool startMotor;
+extern int flightMode;
+
+float accelerationX = 0, accelerationY = 0, accelerationZ = 0;
+float magAcceleration = 0;
+
+// Variables for filter 
+float averageZ = 0, sumZ = 0;
+float storage[25] = {};
+int counter = 0;
 
 //------------------------
 // IMU CALIBRATION VALUES
@@ -108,6 +119,22 @@ void GetActualAttitude()
 	actualPitchRate =  gyro_event.gyro.x * (180/3.14) - offsetPitchRate;
 	actualRollRate = gyro_event.gyro.y * (180/3.14) - offsetRollRate;
 	actualYawRate = -1*gyro_event.gyro.z * (180/3.14) - offsetYawRate;
+
+	accelerationX = -accel_event.acceleration.y - offsetAccX;
+	accelerationY = -accel_event.acceleration.x - offsetAccY;
+	accelerationZ = accel_event.acceleration.z - offsetAccZ;
+
+	magAcceleration = sqrt(accelerationX*accelerationX + accelerationY*accelerationY + accelerationZ*accelerationZ);
+
+	 // Average the acceleration data 
+	 sumZ += accelerationZ;
+	 sumZ -= storage[counter];
+	 averageZ = sumZ/25;
+	 storage[counter] = accelerationZ;
+	 if(counter == 24)
+	 	counter = 0;
+	 else
+	 	counter++;
 
 
 }
