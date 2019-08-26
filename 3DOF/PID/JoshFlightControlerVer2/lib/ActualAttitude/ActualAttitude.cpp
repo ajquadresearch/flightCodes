@@ -1,6 +1,7 @@
 //------------------------------------------------
 // DETERMINE THE ACTUAL ATTITUDE OF THE QUADCOPTER
 //------------------------------------------------
+#include <Arduino.h>
 #include "ActualAttitude.hpp"
 #include <Wire.h>
 #include <Adafruit_Sensor.h>

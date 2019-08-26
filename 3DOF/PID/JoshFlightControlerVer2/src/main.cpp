@@ -1,4 +1,5 @@
 // LIBRARIES 
+#include <Arduino.h>
 #include "ActualAttitude.hpp"
 #include "DesiredAttitude.hpp"
 #include "AttitudeController.hpp"
