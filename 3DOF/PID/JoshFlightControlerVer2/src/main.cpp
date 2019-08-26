@@ -1,3 +1,4 @@
+// LIBRARIES 
 #include "ActualAttitude.hpp"
 #include "DesiredAttitude.hpp"
 #include "AttitudeController.hpp"
@@ -5,18 +6,18 @@
 #include "SpinMotors.hpp"
 
 // attitude loop
-int updateTime = 4000;
+const int updateTime = 4000;
 long lastUpdate = 0;
 
 // Printing
 long lastPrint = 0;
-int printTimer = 5000;
+const int printTimer = 5000;
 
 //-----------------------
 // DEBUGGING
 //-----------------------
 // Wait for Serial 
-bool debug = true;
+bool debug = false;
 
 // Print Angles, Print Rates 
 bool angle = true;
@@ -27,7 +28,7 @@ bool pulseOutput = false;
 
 elapsedMicros elapsedTime;
 
-// GLOBAL VARIABLES
+// GLOBAL VARIABLES USED FOR DEBUGGING
 extern float actualPitch, actualRoll, actualYaw;
 extern float actualPitchRate, actualRollRate, actualYawRate;
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
@@ -40,12 +41,12 @@ unsigned long timer[7] = {0}; 	          //Timer [us]
 volatile int R[7] = {0};	              //Hand-Held Receiver Signals [us]
 
 // Reciever  
-int ch1 = 24;
-int ch2 = 25;
-int ch3 = 26;
-int ch4 = 27;
-int ch5 = 28;
-int ch6 = 29;
+const int ch1 = 24;
+const int ch2 = 25;
+const int ch3 = 26;
+const int ch4 = 27;
+const int ch5 = 28;
+const int ch6 = 29;
 
  // Roll 
  void ch1Int()
