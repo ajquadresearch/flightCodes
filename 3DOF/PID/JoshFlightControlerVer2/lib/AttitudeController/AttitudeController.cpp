@@ -22,20 +22,20 @@ float Ipitch = 0, Iroll = 0, Iyaw = 0;
 
 
 // Gains
-float pPitch = 1.3;
-float dPitch = 18.0;
-float iPitch = 0.00;
-float pid_max_pitch = 100;
+const float pPitch = 1.3;
+const float dPitch = 18.0;
+const float iPitch = 0.00;
+const float pid_max_pitch = 100;
 
-float pRoll = pPitch;
-float dRoll = dPitch;
-float iRoll = iPitch;
-float pid_max_roll = 100;
+const float pRoll = pPitch;
+const float dRoll = dPitch;
+const float iRoll = iPitch;
+const float pid_max_roll = 100;
 
-float pYaw = 4.0;
-float dYaw = 0.0;
-float iYaw = 0.02;
-float pid_max_yaw = 100;
+const float pYaw = 4.0;
+const float dYaw = 0.0;
+const float iYaw = 0.02;
+const float pid_max_yaw = 100;
 
 void GetAttitudeController()
 {

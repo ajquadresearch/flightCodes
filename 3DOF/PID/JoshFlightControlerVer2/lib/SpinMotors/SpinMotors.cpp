@@ -14,20 +14,20 @@ extern int pitchPulse, rollPulse, yawPulse;
 
 int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;
 
- // Get maximum value for selected PWM resolution (100% Duty)
- int pwmMax = 256;
- // Initializing pulse for ESCs, 25% duty
- int escInit = pwmMax/4;
+// Get maximum value for selected PWM resolution (100% Duty)
+const int pwmMax = 256;
+// Initializing pulse for ESCs, 25% duty
+const int escInit = pwmMax/4;
 
- int pwmFreq = 250;
- int pwmRes = 8;
- int escPulseTime = 4000;
+const int pwmFreq = 250;
+const int pwmRes = 8;
+const int escPulseTime = 4000;
 
- // Value for analog write function 
- int escPulse1PWM = 0, escPulse2PWM = 0, escPulse3PWM = 0, escPulse4PWM = 0;
+// Value for analog write function 
+int escPulse1PWM = 0, escPulse2PWM = 0, escPulse3PWM = 0, escPulse4PWM = 0;
 
  // esc pins 
-int escOut1 = 6, escOut2 = 10, escOut3 = 5, escOut4 = 20;
+const int escOut1 = 6, escOut2 = 10, escOut3 = 5, escOut4 = 20;
 
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 
@@ -59,10 +59,10 @@ void EscInitialize()
 }
 
 // idle motors 
-int minPulse = 1100;
+const int minPulse = 1100;
 
 // max motors
-int maxPulse = 2000;
+const int maxPulse = 2000;
 
 void BoundPulse()
 {
