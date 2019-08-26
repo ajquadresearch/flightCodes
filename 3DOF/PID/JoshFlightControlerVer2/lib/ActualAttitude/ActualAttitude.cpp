@@ -19,14 +19,14 @@ extern float offsetPitchRate, offsetRollRate, offsetYawRate;
 //------------------------
 
 // Offsets applied to raw x/y/z mag values
-float mag_offsets[3] = { 28.00F, 19.49F, 55.95F };
+float mag_offsets[3] = { -20.06F, -28.12F, 48.36F };
 
 // Soft iron error compensation matrix
-float mag_softiron_matrix[3][3] = { {  0.898,  -0.059,  0.056 },
-									 {  -0.059,  1.044, -0.026 },
-									 {  0.056, -0.026,  1.074 } };
+float mag_softiron_matrix[3][3] = { {  0.947,  -0.003,  0.010 },
+									 {  -0.003,  1.022, -0.023 },
+									 {  0.010, -0.023,  1.034 } };
 
-float mag_field_strength = 48.76F;
+float mag_field_strength = 48.51F;
 
 // Offsets applied to compensate for gyro zero-drift error for x/y/z
 float gyro_zero_offsets[3]      = { 0.0F, 0.0F, 0.0F };
