@@ -8,10 +8,11 @@ extern float actualPitch, actualRoll, actualYaw;
 extern float actualPitchRate, actualRollRate, actualYawRate;
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
+extern int escPulse1, escPulse2, escPulse3, escPulse4;
 extern volatile int R[7];
 
 // Variables
-int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;
+
 
 // Pitch 
 float errorPitch = 0, errorRoll = 0, errorYaw = 0;
@@ -93,12 +94,6 @@ void GetAttitudeController()
 	{
 		yawPulse = -pid_max_yaw;
 	}
-
-	// Calculate pulses to motors
-	escPulse1 = R[3] - rollPulse + pitchPulse + yawPulse;
-	escPulse2 = R[3] - rollPulse - pitchPulse - yawPulse;
-	escPulse3 = R[3] + rollPulse - pitchPulse + yawPulse; 
-	escPulse4 = R[3] + rollPulse + pitchPulse - yawPulse;
 
 	return;
 

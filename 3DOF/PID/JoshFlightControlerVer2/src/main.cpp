@@ -21,11 +21,11 @@ const int printTimer = 5000;
 bool debug = false;
 
 // Print Angles, Print Rates 
-bool angle = true;
+bool angle = false;
 bool actualRates = false;
 bool reciever = false; 
 bool desiredRates = false;
-bool pulseOutput = false;
+bool pulseOutput = true;
 
 elapsedMicros elapsedTime;
 
@@ -35,6 +35,7 @@ extern float actualPitchRate, actualRollRate, actualYawRate;
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
+extern int pitchPulse, rollPulse, yawPulse;
 
 //----------------------
 // INTERURUPTS  

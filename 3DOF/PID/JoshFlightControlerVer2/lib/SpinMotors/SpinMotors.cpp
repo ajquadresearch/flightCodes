@@ -8,9 +8,11 @@
 extern float actualPitch, actualRoll, actualYaw;
 extern float actualPitchRate, actualRollRate, actualYawRate;
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
-extern int escPulse1, escPulse2, escPulse3, escPulse4;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
 extern volatile int R[7];
+extern int pitchPulse, rollPulse, yawPulse;
+
+int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;
 
  // Get maximum value for selected PWM resolution (100% Duty)
  int pwmMax = 256;
@@ -56,25 +58,6 @@ void EscInitialize()
 	return;
 }
 
-// This function converts the calculate pulse to the PWM signal.
-// Then the PWM signal is written to the motors
-void PulsetoPWM()
-{
-	// Convert Mircosecond time to PWM pulse for motors
-	escPulse1PWM = escPulse1*pwmMax/escPulseTime;
-	escPulse2PWM = escPulse2*pwmMax/escPulseTime;
-	escPulse3PWM = escPulse3*pwmMax/escPulseTime;
-	escPulse4PWM = escPulse4*pwmMax/escPulseTime;
-
-	// Send PWM pulse to motors
-	analogWrite(escOut1, escPulse1PWM);
-  	analogWrite(escOut2, escPulse2PWM);
-  	analogWrite(escOut3, escPulse3PWM);
-  	analogWrite(escOut4, escPulse4PWM);
-
-	return;
-}
-
 // idle motors 
 int minPulse = 1100;
 
@@ -83,6 +66,12 @@ int maxPulse = 2000;
 
 void BoundPulse()
 {
+	// Calculate pulses to motors
+	escPulse1 = R[3] - rollPulse + pitchPulse + yawPulse;
+	escPulse2 = R[3] - rollPulse - pitchPulse - yawPulse;
+	escPulse3 = R[3] + rollPulse - pitchPulse + yawPulse; 
+	escPulse4 = R[3] + rollPulse + pitchPulse - yawPulse;
+	
 	// Upper Bound 
 	if (escPulse1 > maxPulse)
 	{
@@ -135,6 +124,25 @@ void BoundPulse()
 
 		// Reset Integral term until takeoff
 	}
+
+	return;
+}
+
+// This function converts the calculate pulse to the PWM signal.
+// Then the PWM signal is written to the motors
+void PulsetoPWM()
+{
+	// Convert Mircosecond time to PWM pulse for motors
+	escPulse1PWM = escPulse1*pwmMax/escPulseTime;
+	escPulse2PWM = escPulse2*pwmMax/escPulseTime;
+	escPulse3PWM = escPulse3*pwmMax/escPulseTime;
+	escPulse4PWM = escPulse4*pwmMax/escPulseTime;
+
+	// Send PWM pulse to motors
+	analogWrite(escOut1, escPulse1PWM);
+  	analogWrite(escOut2, escPulse2PWM);
+  	analogWrite(escOut3, escPulse3PWM);
+  	analogWrite(escOut4, escPulse4PWM);
 
 	return;
 }

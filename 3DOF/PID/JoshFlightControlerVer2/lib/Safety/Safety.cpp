@@ -11,6 +11,7 @@ extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
 extern volatile int R[7];
+extern int pitchPulse, rollPulse, yawPulse;
 
 void Blink()
 {
