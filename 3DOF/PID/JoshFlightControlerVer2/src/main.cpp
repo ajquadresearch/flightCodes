@@ -34,6 +34,7 @@ extern float actualPitch, actualRoll, actualYaw;
 extern float actualPitchRate, actualRollRate, actualYawRate;
 extern int desiredPitchRate, desiredRollRate, desiredYawRate;
 extern int escPulse1, escPulse2, escPulse3, escPulse4;
+extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
 
 //----------------------
 // INTERURUPTS  

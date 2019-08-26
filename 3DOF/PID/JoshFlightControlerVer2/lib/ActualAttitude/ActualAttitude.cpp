@@ -13,7 +13,13 @@
 Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
 Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
 
+// GLOBAL VARIABLES
+extern float actualPitch, actualRoll, actualYaw;
+extern float actualPitchRate, actualRollRate, actualYawRate;
+extern int desiredPitchRate, desiredRollRate, desiredYawRate;
+extern int escPulse1, escPulse2, escPulse3, escPulse4;
 extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
+extern volatile int R[7];
 
 //------------------------
 // IMU CALIBRATION VALUES

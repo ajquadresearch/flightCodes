@@ -3,9 +3,12 @@
 // THE PULSE OUTPUT IS THEN BOUNDED BY A MIN AND MAX VALUE 
 //------------------------------------------------------------------------------------------
 // Global Variables 
-extern int desiredPitchRate, desiredRollRate, desiredYawRate;
+// GLOBAL VARIABLES USED FOR DEBUGGING
+extern float actualPitch, actualRoll, actualYaw;
 extern float actualPitchRate, actualRollRate, actualYawRate;
-extern volatile unsigned int R[7];
+extern int desiredPitchRate, desiredRollRate, desiredYawRate;
+extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
+extern volatile int R[7];
 
 // Variables
 int escPulse1 = 0, escPulse2 = 0, escPulse3 = 0, escPulse4 = 0;

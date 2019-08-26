@@ -4,6 +4,14 @@
 // This subroutine spins the motors on the quadcopter 
 #include <Arduino.h> 	
 
+// GLOBAL VARIABLES USED FOR DEBUGGING
+extern float actualPitch, actualRoll, actualYaw;
+extern float actualPitchRate, actualRollRate, actualYawRate;
+extern int desiredPitchRate, desiredRollRate, desiredYawRate;
+extern int escPulse1, escPulse2, escPulse3, escPulse4;
+extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
+extern volatile int R[7];
+
  // Get maximum value for selected PWM resolution (100% Duty)
  int pwmMax = 256;
  // Initializing pulse for ESCs, 25% duty

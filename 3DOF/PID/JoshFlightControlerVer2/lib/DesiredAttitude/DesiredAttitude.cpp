@@ -2,9 +2,12 @@
 // DETERMINE THE DESIRED ATTITUDE OF THE QUADCOPTER 
 //-------------------------------------------------
 
-//Inputs 
+// GLOBAL VARIABLES
+extern float actualPitch, actualRoll, actualYaw;
+extern float actualPitchRate, actualRollRate, actualYawRate;
+extern int escPulse1, escPulse2, escPulse3, escPulse4;
+extern float offsetPitchRate, offsetRollRate, offsetYawRate; 
 extern volatile int R[7];
-extern float actualPitch, actualRoll;
 
 //Outputs
 int desiredPitchRate = 0, desiredRollRate = 0, desiredYawRate = 0;
