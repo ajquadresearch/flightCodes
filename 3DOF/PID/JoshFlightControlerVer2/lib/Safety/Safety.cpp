@@ -42,6 +42,12 @@ void SafteyInitialization()
         Blink();
     }
 
+    while( R[1] < 990 || R[2] < 990 || R[3] < 990 || R[4] < 990 || R[5] < 990 || R[6] < 990)
+    {
+        Serial.println("Turn Reciever on");
+        Blink();
+    }
+
     Serial.print("Setup Finished!");
     digitalWrite(led, HIGH);
 	delay(1000);
