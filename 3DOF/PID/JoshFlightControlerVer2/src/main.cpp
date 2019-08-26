@@ -8,10 +8,7 @@
 #include "Safety.hpp"
 #include "SpinMotors.hpp"
 
-<<<<<<< HEAD
-=======
 extern float voltage;
->>>>>>> BatteryCompensation
 
 // attitude loop
 int updateTime = 4000;
@@ -293,19 +290,18 @@ void loop()
   				Serial.print(escPulse4);
 				Serial.println();
 			}
-<<<<<<< HEAD
 			if (altitudeHold == true){
 				Serial.print("Throttle: ");
 				Serial.println(throttle);
-=======
+			}
 			if(battery == true)
 			{
 				Serial.print(" Battery Voltage: ");
 	 			Serial.print(voltage);
 				Serial.println();
->>>>>>> BatteryCompensation
 			}
 		}
 	}
 }
+
 
