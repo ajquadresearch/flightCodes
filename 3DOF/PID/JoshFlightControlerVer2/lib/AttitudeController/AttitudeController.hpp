@@ -1,2 +1,1 @@
 void GetAttitudeController();
-void BoundPulse();

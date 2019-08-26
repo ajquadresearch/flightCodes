@@ -101,8 +101,8 @@ void GetActualAttitude()
 			accel_event.acceleration.x, accel_event.acceleration.y, accel_event.acceleration.z,
 			mx, my, mz);
 
-	actualRoll = filter.getPitch();
-	actualPitch = filter.getRoll();
+	actualRoll = filter.getPitch() + 4.4;
+	actualPitch = filter.getRoll() + 2;
 	actualYaw = -1*filter.getYaw();
 
 	actualPitchRate =  gyro_event.gyro.x * (180/3.14) - offsetPitchRate;

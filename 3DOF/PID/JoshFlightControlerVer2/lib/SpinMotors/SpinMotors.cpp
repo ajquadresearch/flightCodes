@@ -74,3 +74,67 @@ void PulsetoPWM()
 
 	return;
 }
+
+// idle motors 
+int minPulse = 1100;
+
+// max motors
+int maxPulse = 2000;
+
+void BoundPulse()
+{
+	// Upper Bound 
+	if (escPulse1 > maxPulse)
+	{
+		escPulse1 = maxPulse;
+	}
+
+	if (escPulse2 > maxPulse)
+	{
+		escPulse2 = maxPulse;
+	}
+
+	if (escPulse3 > maxPulse)
+	{
+		escPulse3 = maxPulse;
+	}
+
+	if (escPulse4 > maxPulse)
+	{
+		escPulse4 = maxPulse;
+	}
+
+	// LowerBound 
+	if (escPulse1 < minPulse)
+	{
+		escPulse1 = minPulse;
+	}
+
+	if (escPulse2 < minPulse)
+	{
+		escPulse2 = minPulse;
+	}
+
+	if (escPulse3 < minPulse)
+	{
+		escPulse3 = minPulse;
+	}
+
+	if (escPulse4 < minPulse)
+	{
+		escPulse4 = minPulse;
+	}
+
+	// Start/Kill MOTORS
+	if( R[5] < 1100)
+	{
+		escPulse1 = 1000;
+		escPulse2 = 1000;
+		escPulse3 = 1000;
+		escPulse4 = 1000;
+
+		// Reset Integral term until takeoff
+	}
+
+	return;
+}
