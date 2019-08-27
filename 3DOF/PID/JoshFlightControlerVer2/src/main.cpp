@@ -27,7 +27,7 @@ bool actualRates = false;
 bool accelerations = false;
 bool reciever = false; 
 bool desiredRates = false;
-bool pulseOutput = false;
+bool pulseOutput = true;
 bool state = false; 
 
 elapsedMicros elapsedTime;

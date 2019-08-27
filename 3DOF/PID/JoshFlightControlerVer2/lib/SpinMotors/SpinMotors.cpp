@@ -13,7 +13,7 @@ extern volatile int R[7];
 extern int pitchPulse, rollPulse, yawPulse;
 extern float offsetAccX, offsetAccY, offsetAccZ;
 extern float accelerationX, accelerationY, accelerationZ, averageZ, magAcceleration;
-extern bool startMotor;
+extern bool startMotor, takeOff;
 extern int flightMode;
 extern int throttle;
 
@@ -71,6 +71,14 @@ const int maxPulse = 2000;
 
 void BoundPulse()
 {
+	// Check to see if quadcopter has taken off 
+	if(takeOff == false && flightMode ==2)
+	{
+		rollPulse = 0;
+		pitchPulse = 0;
+		yawPulse = 0;
+	}
+
 	// Calculate pulses to motors
 	escPulse1 = throttle - rollPulse + pitchPulse + yawPulse;
 	escPulse2 = throttle - rollPulse - pitchPulse - yawPulse;
