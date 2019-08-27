@@ -38,7 +38,7 @@ const float pid_max_roll = 100;
 
 const float pYaw = 4.0;
 const float dYaw = 0.0;
-const float iYaw = 0.02;
+const float iYaw = 0.00;
 const float pid_max_yaw = 100;
 
 void GetAttitudeController()

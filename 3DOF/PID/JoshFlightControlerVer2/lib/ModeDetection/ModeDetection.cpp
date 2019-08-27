@@ -47,11 +47,7 @@ void GetMode()
 	}
 
 	// actions of different flightmodes
-	if(startMotor == true && flightMode == 1) // manual mode
-	{
-		throttle = R[3];
-	}
-
+	// NOTE: NEED TO ADD A WAY TO REMOVE THE CORRECTIONS FROM THE ATTITUDE CONTROLLER ON TAKEOFF
 	if(startMotor == true && flightMode == 2 && takeOff == false) // autotake off 
 	{
 		if( R[3] > 1400 && R[3] < 1600) // center throttle stick 
@@ -71,9 +67,28 @@ void GetMode()
 		}
 	}
 
-	if(startMotor == true && flightMode == 2 && takeOff == true)
+	if(startMotor == true && flightMode == 3 && takeOff == true) // autoLanding 
+	{
+		if(throttle > 1100 )
+		{
+			throttle--;
+		}
+		if(throttle <= 1100 )
+		{
+			takeOff == false;
+		}
+		
+	}
+
+	// Throttle Setting for different flightmodes
+	if(startMotor == true && flightMode == 2 && takeOff == true) // Throttle after autotakeOff 
 	{
 		throttle = R[3] + takeOffThrottle;
+	}
+
+	if(startMotor == true && flightMode == 1) // manual mode
+	{
+		throttle = R[3];
 	}
 
 
